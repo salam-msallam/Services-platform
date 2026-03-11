@@ -1,0 +1,37 @@
+# Project Standards & Architecture Rules
+
+## General Principles
+- **Framework:** Laravel 12.
+- **Architecture:** Strictly follow the **Service Layer** pattern.
+- **Language:** Use PHP 8.2+ features (readonly properties, type hinting, Enums).
+
+## Layer Responsibilities
+1. **Controllers:** Must be thin. Only handle requests and return JSON responses using a standard format: `{ "success": boolean, "data": array, "message": string }`.
+2. **Services:** All business logic, third-party integrations (like UltraMsg), and complex calculations must be here.
+3. **Requests:** Always use `php artisan make:request` for validation. No `$request->validate()` inside controllers.
+4. **Models:** Use `protected function casts()` for Enums and native types.
+
+## Database & Enums
+- Always use `App\Enums\StatusEnum` for status fields.
+
+
+## Specific Integrations
+- **Auth:** Use Laravel Passport for Mobile API and Web Guards for Admin.
+- **OTP:** Implement OTP via UltraMsg Service class.
+
+## Dependency Injection (DI) Rules
+- **Method Injection:** Always use Type Hinting in controller methods and service constructors to inject dependencies .
+- **No Manual Instantiation:** Never use the `new` keyword for Classes, Services, or Models inside Controllers or Services. Always inject them through the constructor or method.
+
+## Database Transactions
+All operations that modify multiple database records must use database transactions.
+Use:
+DB::transaction(function () {
+    // operations
+});
+
+ ## API Resources
+Always use Laravel API Resources for transforming responses.
+Never return Eloquent models directly.
+
+Always use Eloquent Relationships for creating related models. Instead of manual ID assignment, use $user->appUser()->create([...]) to ensure data integrity."
