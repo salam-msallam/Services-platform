@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\DB;
 
 class AppUserAuthService
 {
-    private const TOKEN_NAME = 'app_user_token';
 
     public function __construct(protected OtpService $otpService) {}
 
@@ -46,7 +45,7 @@ class AppUserAuthService
 
         $user = User::query()->with('appUser')->findOrFail($otpRecord->user_id);
 
-        $result = $user->createToken(self::TOKEN_NAME);
+        $result = $user->createToken('app_user_token');
 
         return [
             'user' => $user,
