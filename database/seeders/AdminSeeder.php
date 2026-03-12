@@ -3,9 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
 
 class AdminSeeder extends Seeder
 {
@@ -14,15 +14,20 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::create([
+        $user = User::query()->create([
             'name' => 'Admin',
             'password' => Hash::make('password'),
             'type' => 'admin',
         ]);
 
-        $admin=$user->admin()->create([
+        $user->admin()->create([
             'email' => 'admin@example.com',
             'main_admin' => true,
         ]);
+
+        $permission = Permission::firstOrCreate(
+            ['name' => 'manage admins', 'guard_name' => 'web']
+        );
+        $user->givePermissionTo($permission);
     }
 }
