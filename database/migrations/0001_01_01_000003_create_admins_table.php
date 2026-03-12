@@ -13,10 +13,8 @@ return new class extends Migration
     {
         Schema::create('admins', function (Blueprint $table) {
             $table->id();
-            // ربط الأدمن بجدول المستخدمين الأساسي
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('email')->unique();
-            // تحديد إذا كان سوبر أدمن أم لا
             $table->boolean('main_admin')->default(false);
             $table->timestamps();
         });
