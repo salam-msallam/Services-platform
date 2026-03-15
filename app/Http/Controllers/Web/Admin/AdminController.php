@@ -10,9 +10,7 @@ use Illuminate\Http\RedirectResponse;
 
 class AdminController extends Controller
 {
-    public function __construct(
-        private readonly AdminService $adminService,
-    ) {}
+    public function __construct(protected AdminService $adminService) {}
 
     public function index(): View
     {

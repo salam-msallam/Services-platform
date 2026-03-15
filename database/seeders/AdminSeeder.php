@@ -21,7 +21,7 @@ class AdminSeeder extends Seeder
         ]);
 
         $user->admin()->create([
-            'email' => 'admin@example.com',
+            'email' => 'admin@gmail.com',
             'main_admin' => true,
         ]);
 
