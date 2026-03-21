@@ -1,0 +1,35 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'admin_panel'      => 'لوحة التحكم',
+    'dashboard'        => 'الرئيسية',
+    'manage_admins'    => 'إدارة المشرفين',
+    'add_admin'        => 'إضافة مشرف',
+    'create_admin'     => 'إنشاء مشرف',
+    'administrators'   => 'المشرفون',
+    'name'             => 'الاسم',
+    'email'            => 'البريد الإلكتروني',
+    'password'         => 'كلمة المرور',
+    'confirm_password' => 'تأكيد كلمة المرور',
+    'logout'           => 'تسجيل الخروج',
+    'main_admin'       => 'مشرف رئيسي',
+    'yes'              => 'نعم',
+    'no'               => 'لا',
+    'login'            => 'تسجيل الدخول',
+    'remember_me'      => 'تذكرني',
+    'welcome'          => 'مرحباً',
+    'created_at'       => 'تاريخ الإنشاء',
+    'no_admins'        => 'لا يوجد مشرفون بعد.',
+    'admin_created'    => 'تم إنشاء المشرف بنجاح.',
+    'cancel'           => 'إلغاء',
+    'you_are_main'     => 'أنت المشرف الرئيسي.',
+    'credentials_error' => 'بيانات الاعتماد غير متطابقة مع البيانات المسجلة.',
+    'sign_in_account'  => 'تسجيل الدخول إلى حسابك',
+    'sign_in_continue' => 'أدخل بياناتك للمتابعة',
+    'all_rights'       => 'جميع الحقوق محفوظة.',
+    'navigation'       => 'التنقل',
+    'account'          => 'الحساب',
+    'actions'          => 'الإجراءات',
+];

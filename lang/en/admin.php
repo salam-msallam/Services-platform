@@ -1,0 +1,35 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'admin_panel'      => 'Admin Panel',
+    'dashboard'        => 'Dashboard',
+    'manage_admins'    => 'Manage Admins',
+    'add_admin'        => 'Add Admin',
+    'create_admin'     => 'Create Admin',
+    'administrators'   => 'Administrators',
+    'name'             => 'Name',
+    'email'            => 'Email',
+    'password'         => 'Password',
+    'confirm_password' => 'Confirm Password',
+    'logout'           => 'Logout',
+    'main_admin'       => 'Main Admin',
+    'yes'              => 'Yes',
+    'no'               => 'No',
+    'login'            => 'Login',
+    'remember_me'      => 'Remember me',
+    'welcome'          => 'Welcome',
+    'created_at'       => 'Created',
+    'no_admins'        => 'No administrators yet.',
+    'admin_created'    => 'Administrator created successfully.',
+    'cancel'           => 'Cancel',
+    'you_are_main'     => 'You are the main administrator.',
+    'credentials_error' => 'These credentials do not match our records.',
+    'sign_in_account'  => 'Sign in to your account',
+    'sign_in_continue' => 'Enter your credentials to continue',
+    'all_rights'       => 'All rights reserved.',
+    'navigation'       => 'Navigation',
+    'account'          => 'Account',
+    'actions'          => 'Actions',
+];
