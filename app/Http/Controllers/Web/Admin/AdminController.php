@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAdminRequest;
+use App\Models\Admin;
 use App\Services\Admin\AdminService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
@@ -34,6 +37,21 @@ class AdminController extends Controller
 
         return redirect()
             ->route('admin.admins.index')
-            ->with('success', 'Administrator created successfully.');
+            ->with('success', __('admin.admin_created'));
+    }
+
+    public function destroy(Request $request, Admin $admin): RedirectResponse
+    {
+        try {
+            $this->adminService->deleteAdmin($admin, (int) $request->user()->id);
+        } catch (AuthorizationException $e) {
+            return back()->withErrors([
+                'admin' => $e->getMessage(),
+            ]);
+        }
+
+        return redirect()
+            ->route('admin.admins.index')
+            ->with('success', __('admin.admin_deleted'));
     }
 }

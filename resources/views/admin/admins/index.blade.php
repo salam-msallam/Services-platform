@@ -23,6 +23,16 @@
             </div>
         @endif
 
+        @if($errors->any())
+            <div class="bg-rose-50 border border-rose-200 text-rose-700 rounded-2xl px-4 py-3 text-sm">
+                <ul class="list-disc list-inside">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
             <div class="px-4 py-3 bg-indigo-50 border-b border-indigo-100">
                 <div class="text-sm font-semibold text-indigo-900">{{ __('admin.navigation') }}</div>
@@ -41,6 +51,9 @@
                             </th>
                             <th class="px-4 py-3 {{ app()->getLocale() === 'ar' ? 'text-right' : 'text-left' }}">
                                 {{ __('admin.main_admin') }}
+                            </th>
+                            <th class="px-4 py-3 {{ app()->getLocale() === 'ar' ? 'text-right' : 'text-left' }}">
+                                {{ __('admin.actions') }}
                             </th>
                         </tr>
                         </thead>
@@ -65,10 +78,27 @@
                                         </span>
                                     @endif
                                 </td>
+                                <td class="px-4 py-3 whitespace-nowrap">
+                                    @if(auth()->id() !== $admin->user_id && ! $admin->main_admin)
+                                        <form
+                                            method="POST"
+                                            action="{{ route('admin.admins.destroy', $admin) }}"
+                                            onsubmit="return confirm('{{ __('admin.confirm_delete') }}')"
+                                        >
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="inline-flex items-center rounded-xl border border-rose-200 bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700 hover:bg-rose-100 transition">
+                                                {{ __('admin.delete') }}
+                                            </button>
+                                        </form>
+                                    @else
+                                        <span class="text-xs text-slate-400">-</span>
+                                    @endif
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3" class="px-4 py-12 text-center text-slate-500">
+                                <td colspan="4" class="px-4 py-12 text-center text-slate-500">
                                     {{ __('admin.no_admins') }}
                                 </td>
                             </tr>

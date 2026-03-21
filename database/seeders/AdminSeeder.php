@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Permission;
 
 class AdminSeeder extends Seeder
 {
@@ -14,20 +13,18 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::query()->create([
-            'name' => 'Admin',
-            'password' => Hash::make('password'),
-            'type' => 'admin',
-        ]);
+        $this->call(RolesAndPermissionsSeeder::class);
 
-        $user->admin()->create([
-            'email' => 'admin@gmail.com',
-            'main_admin' => true,
-        ]);
-
-        $permission = Permission::firstOrCreate(
-            ['name' => 'manage admins', 'guard_name' => 'web']
+        $user = User::query()->firstOrCreate(
+            ['name' => 'Admin', 'type' => 'admin'],
+            ['password' => Hash::make('password')],
         );
-        $user->givePermissionTo($permission);
+
+        $user->admin()->updateOrCreate(
+            ['user_id' => $user->id],
+            ['email' => 'admin@gmail.com', 'main_admin' => true],
+        );
+
+        $user->syncRoles(['super-admin']);
     }
 }
