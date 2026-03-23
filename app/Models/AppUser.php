@@ -16,7 +16,18 @@ class AppUser extends Model
     protected $fillable = [
         'user_id',
         'phone',
+        'phone_verified_at',
     ];
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'phone_verified_at' => 'datetime',
+        ];
+    }
 
     public function user(): BelongsTo
     {

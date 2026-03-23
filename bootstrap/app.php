@@ -1,6 +1,7 @@
 <?php
 
 use App\Exceptions\Auth\InvalidOtpException;
+use App\Http\Middleware\SetApiLocale;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -23,6 +24,9 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // Keep admin locale in sync (AR/EN) for Blade + RTL.
         $middleware->appendToGroup('web', SetLocale::class);
+
+        // API JSON messages use Accept-Language (en|ar).
+        $middleware->appendToGroup('api', SetApiLocale::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (InvalidOtpException $e, Request $request) {

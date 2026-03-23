@@ -21,8 +21,6 @@ class AppUserAuthResource extends JsonResource
             'name' => $user?->name,
             'phone' => $user?->appUser?->phone ?? $data['phone'] ?? null,
             'token' => $data['token'] ?? null,
-            'token_type' => $data['token_type'] ?? 'Bearer',
-            'expires_in' => $data['expires_in'] ?? 0,
         ];
     }
 }

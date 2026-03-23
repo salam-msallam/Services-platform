@@ -36,7 +36,7 @@ final class OtpService
 
         $this->ultraMsgWhatsAppService->sendOtp(
             $appUser->phone,
-            __('Your verification code is: :code', ['code' => $code])
+            __('api.otp_whatsapp_message', ['code' => $code])
         );
     }
 
@@ -50,7 +50,7 @@ final class OtpService
             ->first();
 
         if (! $record || ! hash_equals((string) $record->otp_code, (string) $code)) {
-            throw new InvalidOtpException();
+            throw new InvalidOtpException(__('api.invalid_otp'));
         }
 
         DB::transaction(function () use ($record): void {

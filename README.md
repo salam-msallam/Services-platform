@@ -54,6 +54,17 @@ In order to ensure that the Laravel community is welcoming to all, please review
 
 If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
+## App user API authentication
+
+Base path: `/api/auth/app`. Optional header: `Accept-Language: en` or `ar` for translated JSON messages.
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| POST | `register` | No | Create app user (unverified phone) and send OTP (WhatsApp). |
+| POST | `verify-otp` | No | Verify OTP, mark phone verified, return Passport access token. |
+| POST | `login` | No | Phone + password for verified users; returns access token (no OTP). |
+| POST | `logout` | Bearer token | Revokes the current access token. |
+
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
