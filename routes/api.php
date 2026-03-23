@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\BusinessAccount\BusinessAccountController;
 use App\Http\Controllers\Api\Auth\AppUserAuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -13,4 +14,9 @@ Route::prefix('auth/app')->group(function (): void {
     Route::post('logout', [AppUserAuthController::class, 'logout'])
         ->middleware('auth:api')
         ->name('auth.app.logout');
+});
+
+Route::middleware('auth:api')->group(function (): void {
+    Route::post('business-accounts', [BusinessAccountController::class, 'store'])
+        ->name('business-accounts.store');
 });

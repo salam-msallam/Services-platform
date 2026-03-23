@@ -7,12 +7,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Translatable\HasTranslations;
 
-class BusinessAccount extends Model
+class BusinessAccount extends Model implements HasMedia
 {
     use HasFactory;
     use HasTranslations;
+    use InteractsWithMedia;
 
     /**
      * @var array<int, string>
@@ -20,6 +23,7 @@ class BusinessAccount extends Model
     public array $translatable = [
         'name',
         'description',
+        'activities',
     ];
 
     /**
@@ -29,7 +33,10 @@ class BusinessAccount extends Model
         'user_id',
         'name',
         'description',
-        'activity_type',
+        'activities',
+        'license_number',
+        'city_id',
+        'activity_type_id',
         'status',
     ];
 
@@ -48,6 +55,16 @@ class BusinessAccount extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class);
+    }
+
+    public function activityType(): BelongsTo
+    {
+        return $this->belongsTo(ActivityType::class);
+    }
+
     public function services(): HasMany
     {
         return $this->hasMany(Service::class);
@@ -56,5 +73,11 @@ class BusinessAccount extends Model
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('images');
+        $this->addMediaCollection('documents');
     }
 }

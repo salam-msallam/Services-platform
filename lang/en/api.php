@@ -13,4 +13,5 @@ return [
     'register_success' => 'Registration started. An OTP has been sent to your phone.',
     'authenticated_success' => 'Authenticated successfully.',
     'logout_success' => 'Logged out successfully.',
+    'business_account_created' => 'Business account created successfully and is pending review.',
 ];

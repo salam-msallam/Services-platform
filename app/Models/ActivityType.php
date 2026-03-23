@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Translatable\HasTranslations;
 
-class City extends Model
+class ActivityType extends Model
 {
     use HasFactory;
     use HasTranslations;
@@ -24,25 +24,7 @@ class City extends Model
      */
     protected $fillable = [
         'name',
-        'x',
-        'y',
     ];
-
-    /**
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'x' => 'decimal:7',
-            'y' => 'decimal:7',
-        ];
-    }
-
-    public function services(): HasMany
-    {
-        return $this->hasMany(Service::class);
-    }
 
     public function businessAccounts(): HasMany
     {
