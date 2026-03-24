@@ -75,6 +75,21 @@
                     </li>
                 @endcan
 
+                @can('manage activity types')
+                    <li>
+                        <a
+                            href="{{ route('admin.activity-types.index') }}"
+                            class="group flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition
+                                {{ request()->routeIs('admin.activity-types.*') ? 'bg-indigo-600 text-white' : 'text-indigo-100 hover:bg-indigo-900/60 hover:text-white' }}"
+                        >
+                            <svg class="shrink-0" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            {{ __('admin.manage_activity_types') }}
+                        </a>
+                    </li>
+                @endcan
+
             </ul>
         </nav>
 

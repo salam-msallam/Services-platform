@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Web\Admin\AdminController;
 use App\Http\Controllers\Web\Admin\AdminDashboardController;
+use App\Http\Controllers\Web\Admin\ActivityTypeController;
 use App\Http\Controllers\Web\Admin\RoleController;
 use App\Http\Controllers\Web\Admin\RolePermissionController;
 use App\Http\Controllers\Web\LoginController;
@@ -71,6 +72,21 @@ Route::prefix('admin')
                         ->name('roles.update');
                     Route::delete('roles/{role}', [RoleController::class, 'destroy'])
                         ->name('roles.destroy');
+                });
+
+                Route::middleware('permission:manage activity types')->group(function (): void {
+                    Route::get('activity-types', [ActivityTypeController::class, 'index'])
+                        ->name('activity-types.index');
+                    Route::get('activity-types/create', [ActivityTypeController::class, 'create'])
+                        ->name('activity-types.create');
+                    Route::post('activity-types', [ActivityTypeController::class, 'store'])
+                        ->name('activity-types.store');
+                    Route::get('activity-types/{activityType}/edit', [ActivityTypeController::class, 'edit'])
+                        ->name('activity-types.edit');
+                    Route::put('activity-types/{activityType}', [ActivityTypeController::class, 'update'])
+                        ->name('activity-types.update');
+                    Route::delete('activity-types/{activityType}', [ActivityTypeController::class, 'destroy'])
+                        ->name('activity-types.destroy');
                 });
 
                 Route::middleware('permission:assign role permissions')->group(function (): void {

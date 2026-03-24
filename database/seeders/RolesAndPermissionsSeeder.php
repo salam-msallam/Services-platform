@@ -41,6 +41,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'manage reports',
             'manage cities',
             'manage sliders',
+            'manage activity types',
 
         ];
 
