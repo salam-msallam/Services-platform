@@ -90,6 +90,22 @@
                     </li>
                 @endcan
 
+                @can('manage cities')
+                    <li>
+                        <a
+                            href="{{ route('admin.cities.index') }}"
+                            class="group flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition
+                                {{ request()->routeIs('admin.cities.*') ? 'bg-indigo-600 text-white' : 'text-indigo-100 hover:bg-indigo-900/60 hover:text-white' }}"
+                        >
+                            <svg class="shrink-0" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11Z" stroke="currentColor" stroke-width="2"/>
+                                <circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            {{ __('admin.manage_cities') }}
+                        </a>
+                    </li>
+                @endcan
+
             </ul>
         </nav>
 

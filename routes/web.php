@@ -3,6 +3,7 @@
 use App\Http\Controllers\Web\Admin\AdminController;
 use App\Http\Controllers\Web\Admin\AdminDashboardController;
 use App\Http\Controllers\Web\Admin\ActivityTypeController;
+use App\Http\Controllers\Web\Admin\CityController;
 use App\Http\Controllers\Web\Admin\RoleController;
 use App\Http\Controllers\Web\Admin\RolePermissionController;
 use App\Http\Controllers\Web\LoginController;
@@ -87,6 +88,21 @@ Route::prefix('admin')
                         ->name('activity-types.update');
                     Route::delete('activity-types/{activityType}', [ActivityTypeController::class, 'destroy'])
                         ->name('activity-types.destroy');
+                });
+
+                Route::middleware('permission:manage cities')->group(function (): void {
+                    Route::get('cities', [CityController::class, 'index'])
+                        ->name('cities.index');
+                    Route::get('cities/create', [CityController::class, 'create'])
+                        ->name('cities.create');
+                    Route::post('cities', [CityController::class, 'store'])
+                        ->name('cities.store');
+                    Route::get('cities/{city}/edit', [CityController::class, 'edit'])
+                        ->name('cities.edit');
+                    Route::put('cities/{city}', [CityController::class, 'update'])
+                        ->name('cities.update');
+                    Route::delete('cities/{city}', [CityController::class, 'destroy'])
+                        ->name('cities.destroy');
                 });
 
                 Route::middleware('permission:assign role permissions')->group(function (): void {

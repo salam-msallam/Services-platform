@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             RolesAndPermissionsSeeder::class,
             AdminSeeder::class,
             ActivityTypeSeeder::class,
+            CitySeeder::class,
         ]);
 
         $user = User::factory()->create([
