@@ -6,6 +6,7 @@ use App\Http\Controllers\Web\Admin\ActivityTypeController;
 use App\Http\Controllers\Web\Admin\CityController;
 use App\Http\Controllers\Web\Admin\RoleController;
 use App\Http\Controllers\Web\Admin\RolePermissionController;
+use App\Http\Controllers\Web\Admin\BusinessAccountReviewController;
 use App\Http\Controllers\Web\LoginController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
@@ -103,6 +104,19 @@ Route::prefix('admin')
                         ->name('cities.update');
                     Route::delete('cities/{city}', [CityController::class, 'destroy'])
                         ->name('cities.destroy');
+                });
+
+                Route::middleware('permission:approve business accounts|reject business accounts')->group(function (): void {
+                    Route::get('business-accounts', [BusinessAccountReviewController::class, 'index'])
+                        ->name('business-accounts.index');
+
+                    Route::post('business-accounts/{businessAccount}/accept', [BusinessAccountReviewController::class, 'accept'])
+                        ->middleware('permission:approve business accounts')
+                        ->name('business-accounts.accept');
+
+                    Route::post('business-accounts/{businessAccount}/reject', [BusinessAccountReviewController::class, 'reject'])
+                        ->middleware('permission:reject business accounts')
+                        ->name('business-accounts.reject');
                 });
 
                 Route::middleware('permission:assign role permissions')->group(function (): void {
