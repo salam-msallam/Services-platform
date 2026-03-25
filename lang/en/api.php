@@ -14,4 +14,5 @@ return [
     'authenticated_success' => 'Authenticated successfully.',
     'logout_success' => 'Logged out successfully.',
     'business_account_created' => 'Business account created successfully and is pending review.',
+    'business_account_activity_type_already_exists' => 'You already created a business account for this activity type.',
 ];

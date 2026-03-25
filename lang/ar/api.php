@@ -14,4 +14,5 @@ return [
     'authenticated_success' => 'تم تسجيل الدخول بنجاح.',
     'logout_success' => 'تم تسجيل الخروج بنجاح.',
     'business_account_created' => 'تم إنشاء حساب الأعمال بنجاح وهو الآن قيد المراجعة.',
+    'business_account_activity_type_already_exists' => 'لقد قمت بالفعل بإنشاء حساب أعمال لنوع النشاط هذا.',
 ];
