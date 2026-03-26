@@ -6,6 +6,7 @@ use App\Models\Admin;
 use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 
 class AdminService
 {
@@ -20,9 +21,12 @@ class AdminService
             ->get();
     }
 
-    public function createAdmin(string $name, string $email, string $password): Admin
+    /**
+     * @param  list<int>  $roleIds
+     */
+    public function createAdmin(string $name, string $email, string $password, array $roleIds): Admin
     {
-        return DB::transaction(function () use ($name, $email, $password): Admin {
+        return DB::transaction(function () use ($name, $email, $password, $roleIds): Admin {
             $user = User::query()->create([
                 'name' => $name,
                 'password' => $password,
@@ -34,9 +38,66 @@ class AdminService
                 'main_admin' => false,
             ]);
 
-            $user->syncRoles(['admin']);
+            $roleNames = Role::query()
+                ->where('guard_name', 'web')
+                ->whereIn('id', $roleIds)
+                ->pluck('name')
+                ->all();
+
+            $user->syncRoles($roleNames);
 
             return $admin;
+        });
+    }
+
+    /**
+     * @param  array{name: string, email: string, password?: string|null, role_ids: list<int>}  $data
+     *
+     * @throws AuthorizationException
+     */
+    public function updateAdmin(Admin $admin, array $data): Admin
+    {
+        $admin->loadMissing('user.roles');
+
+        return DB::transaction(function () use ($admin, $data): Admin {
+            $user = $admin->user;
+
+            if ($user === null) {
+                throw new AuthorizationException(__('admin.credentials_error'));
+            }
+
+            $user->update([
+                'name' => $data['name'],
+            ]);
+
+            $admin->update([
+                'email' => $data['email'],
+            ]);
+
+            if (! empty($data['password'])) {
+                $user->update([
+                    'password' => $data['password'],
+                ]);
+            }
+
+            if ($admin->main_admin) {
+                $currentRoleIds = $user->roles()->pluck('roles.id')->map(fn ($id): int => (int) $id)->sort()->values()->all();
+                $incomingRoleIds = collect($data['role_ids'])->map(fn ($id): int => (int) $id)->sort()->values()->all();
+
+                if ($currentRoleIds !== $incomingRoleIds) {
+                    throw new AuthorizationException(__('admin.cannot_edit_main_admin_roles'));
+                }
+            }
+
+            $roleNames = Role::query()
+                ->where('guard_name', 'web')
+                ->whereIn('id', $data['role_ids'])
+                ->pluck('name')
+                ->all();
+
+            $user->syncRoles($roleNames);
+
+            return $admin->fresh(['user.roles']);
         });
     }
 

@@ -57,6 +57,10 @@ Route::prefix('admin')
                         ->name('admins.create');
                     Route::post('admins', [AdminController::class, 'store'])
                         ->name('admins.store');
+                    Route::get('admins/{admin}/edit', [AdminController::class, 'edit'])
+                        ->name('admins.edit');
+                    Route::put('admins/{admin}', [AdminController::class, 'update'])
+                        ->name('admins.update');
                     Route::delete('admins/{admin}', [AdminController::class, 'destroy'])
                         ->name('admins.destroy');
                 });
@@ -68,6 +72,8 @@ Route::prefix('admin')
                         ->name('roles.create');
                     Route::post('roles', [RoleController::class, 'store'])
                         ->name('roles.store');
+                    Route::get('roles/{role}', [RoleController::class, 'show'])
+                        ->name('roles.show');
                     Route::get('roles/{role}/edit', [RoleController::class, 'edit'])
                         ->name('roles.edit');
                     Route::put('roles/{role}', [RoleController::class, 'update'])
@@ -106,7 +112,7 @@ Route::prefix('admin')
                         ->name('cities.destroy');
                 });
 
-                Route::middleware('permission:approve business accounts|reject business accounts')->group(function (): void {
+                Route::middleware('role:super-admin|business-auditor')->group(function (): void {
                     Route::get('business-accounts', [BusinessAccountReviewController::class, 'index'])
                         ->name('business-accounts.index');
                     Route::get('business-accounts/{businessAccount}', [BusinessAccountReviewController::class, 'show'])

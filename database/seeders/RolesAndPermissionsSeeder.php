@@ -13,46 +13,55 @@ class RolesAndPermissionsSeeder extends Seeder
     {
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        $superAdminPermissions = [
+        $userManagerPermissions = [
+            'view users',
+            'create user',
+            'edit user',
+            'delete user',
+        ];
+
+        $businessAuditorPermissions = [
             'access admin dashboard',
+            'approve business accounts',
+            'reject business accounts',
+        ];
+
+        $serviceModeratorPermissions = [
+            'approve services',
+            'reject services',
+        ];
+
+        $contentManagerPermissions = [
+            'manage categories',
+            'manage sub-categories',
+            'manage dynamic fields',
+            'manage cities',
+            'manage sliders',
+            'manage activity types',
+        ];
+
+        $adminPanelCorePermissions = [
             'manage admins',
             'manage roles',
             'assign role permissions',
         ];
 
-        foreach ($superAdminPermissions as $permissionName) {
+        $allWebPermissions = array_values(array_unique(array_merge(
+            $userManagerPermissions,
+            $businessAuditorPermissions,
+            $serviceModeratorPermissions,
+            $contentManagerPermissions,
+            $adminPanelCorePermissions,
+        )));
+
+        foreach ($allWebPermissions as $permissionName) {
             Permission::query()->firstOrCreate([
                 'name' => $permissionName,
                 'guard_name' => 'web',
             ]);
         }
 
-        $adminPermissions = [
-            'access admin dashboard',
-            'approve business accounts',
-            'reject business accounts',
-            'approve services',
-            'reject services',
-            'create user',
-            'delete user',
-            'manage categories',
-            'manage sub-categories',
-            'manage dynamic fields',
-            'manage reports',
-            'manage cities',
-            'manage sliders',
-            'manage activity types',
-
-        ];
-
-        foreach ($adminPermissions as $permissionName) {
-            Permission::query()->firstOrCreate([
-                'name' => $permissionName,
-                'guard_name' => 'web',
-            ]);
-        }
-
-        $userPermissions = [
+        $regularUserPermissions = [
             'manage business account',
             'manage services',
             'manage service requests',
@@ -61,7 +70,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'report services',
         ];
 
-        foreach ($userPermissions as $permissionName) {
+        foreach ($regularUserPermissions as $permissionName) {
             Permission::query()->firstOrCreate([
                 'name' => $permissionName,
                 'guard_name' => 'api',
@@ -73,19 +82,49 @@ class RolesAndPermissionsSeeder extends Seeder
             'guard_name' => 'web',
         ]);
 
-        $adminRole = Role::query()->firstOrCreate([
-            'name' => 'admin',
+        $userManagerRole = Role::query()->firstOrCreate([
+            'name' => 'user-manager',
             'guard_name' => 'web',
         ]);
 
-        $userRole = Role::query()->firstOrCreate([
+        $businessAuditorRole = Role::query()->firstOrCreate([
+            'name' => 'business-auditor',
+            'guard_name' => 'web',
+        ]);
+
+        $serviceModeratorRole = Role::query()->firstOrCreate([
+            'name' => 'service-moderator',
+            'guard_name' => 'web',
+        ]);
+
+        $contentManagerRole = Role::query()->firstOrCreate([
+            'name' => 'content-manager',
+            'guard_name' => 'web',
+        ]);
+
+        $adminManagerRole = Role::query()->firstOrCreate([
+            'name' => 'admin-manager',
+            'guard_name' => 'web',
+        ]);
+
+        $rolePermissionManagerRole = Role::query()->firstOrCreate([
+            'name' => 'role-permission-manager',
+            'guard_name' => 'web',
+        ]);
+
+        $regularUserRole = Role::query()->firstOrCreate([
             'name' => 'user',
             'guard_name' => 'api',
         ]);
 
-        $superAdminRole->syncPermissions(array_merge($superAdminPermissions , $adminPermissions));
-        $adminRole->syncPermissions($adminPermissions);
-        $userRole->syncPermissions($userPermissions);
+        $userManagerRole->syncPermissions($userManagerPermissions);
+        $businessAuditorRole->syncPermissions($businessAuditorPermissions);
+        $serviceModeratorRole->syncPermissions($serviceModeratorPermissions);
+        $contentManagerRole->syncPermissions($contentManagerPermissions);
+        $adminManagerRole->syncPermissions(['manage admins']);
+        $rolePermissionManagerRole->syncPermissions(['manage roles', 'assign role permissions']);
+        $superAdminRole->syncPermissions($allWebPermissions);
+        $regularUserRole->syncPermissions($regularUserPermissions);
     }
 }
 

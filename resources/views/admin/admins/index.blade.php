@@ -79,21 +79,28 @@
                                     @endif
                                 </td>
                                 <td class="px-4 py-3 whitespace-nowrap">
-                                    @if(auth()->id() !== $admin->user_id && ! $admin->main_admin)
-                                        <form
-                                            method="POST"
-                                            action="{{ route('admin.admins.destroy', $admin) }}"
-                                            onsubmit="return confirm('{{ __('admin.confirm_delete') }}')"
+                                    <div class="flex items-center gap-2">
+                                        <a
+                                            href="{{ route('admin.admins.edit', $admin) }}"
+                                            class="inline-flex items-center rounded-xl border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition"
                                         >
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="inline-flex items-center rounded-xl border border-rose-200 bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700 hover:bg-rose-100 transition">
-                                                {{ __('admin.delete') }}
-                                            </button>
-                                        </form>
-                                    @else
-                                        <span class="text-xs text-slate-400">-</span>
-                                    @endif
+                                            {{ __('admin.edit') }}
+                                        </a>
+
+                                        @if(auth()->id() !== $admin->user_id && ! $admin->main_admin)
+                                            <form
+                                                method="POST"
+                                                action="{{ route('admin.admins.destroy', $admin) }}"
+                                                onsubmit="return confirm('{{ __('admin.confirm_delete') }}')"
+                                            >
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="inline-flex items-center rounded-xl border border-rose-200 bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700 hover:bg-rose-100 transition">
+                                                    {{ __('admin.delete') }}
+                                                </button>
+                                            </form>
+                                        @endif
+                                    </div>
                                 </td>
                             </tr>
                         @empty

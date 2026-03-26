@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Admin;
 
+use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
@@ -17,9 +18,23 @@ class RoleService
     public function listRolesWithPermissionCount(): Collection
     {
         return Role::query()
+            ->where('guard_name', 'web')
             ->withCount('permissions')
             ->orderBy('name')
             ->get();
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function listAssignedAdmins(Role $role): Collection
+    {
+        return User::query()
+            ->role($role->name, 'web')
+            ->where('type', 'admin')
+            ->with('admin')
+            ->orderBy('name')
+            ->get(['id', 'name']);
     }
 
     /**

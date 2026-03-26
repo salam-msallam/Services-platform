@@ -43,7 +43,11 @@
                     <tbody class="divide-y divide-slate-100">
                     @forelse($roles as $role)
                         <tr class="hover:bg-slate-50/80 transition">
-                            <td class="px-4 py-3 font-medium text-slate-900">{{ $role->name }}</td>
+                            <td class="px-4 py-3 font-medium text-slate-900">
+                                <a href="{{ route('admin.roles.show', $role) }}" class="text-indigo-700 hover:text-indigo-800 hover:underline">
+                                    {{ $role->name }}
+                                </a>
+                            </td>
                             <td class="px-4 py-3 text-slate-700">{{ $role->permissions_count }}</td>
                             <td class="px-4 py-3">
                                 <div class="flex flex-wrap gap-2">

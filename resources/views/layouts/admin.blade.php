@@ -90,7 +90,7 @@
                     </li>
                 @endcan
 
-                @canany(['approve business accounts', 'reject business accounts'])
+                @hasanyrole('super-admin|business-auditor')
                     <li>
                         <a
                             href="{{ route('admin.business-accounts.index') }}"
@@ -103,7 +103,7 @@
                             {{ __('admin.business_accounts_review_menu') }}
                         </a>
                     </li>
-                @endcanany
+                @endhasanyrole
 
                 @can('manage cities')
                     <li>

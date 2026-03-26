@@ -99,6 +99,34 @@
                         @enderror
                     </div>
 
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700">
+                            {{ __('admin.assign_roles') }}
+                        </label>
+                        <p class="mt-1 text-xs text-slate-500">{{ __('admin.assign_roles_help') }}</p>
+
+                        <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            @foreach($roles as $role)
+                                <label class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
+                                    <input
+                                        type="checkbox"
+                                        name="role_ids[]"
+                                        value="{{ $role->id }}"
+                                        @checked(in_array((string) $role->id, array_map('strval', old('role_ids', [])), true))
+                                        class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                                    >
+                                    <span class="text-sm text-slate-800">{{ $role->name }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                        @error('role_ids')
+                            <div class="mt-1 text-sm text-rose-600">{{ $message }}</div>
+                        @enderror
+                        @error('role_ids.*')
+                            <div class="mt-1 text-sm text-rose-600">{{ $message }}</div>
+                        @enderror
+                    </div>
+
                     <div class="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
                         <a
                             href="{{ route('admin.admins.index') }}"

@@ -41,6 +41,13 @@ class RoleController extends Controller
         return view('admin.roles.edit', compact('role'));
     }
 
+    public function show(Role $role): View
+    {
+        $assignedAdmins = $this->roleService->listAssignedAdmins($role);
+
+        return view('admin.roles.show', compact('role', 'assignedAdmins'));
+    }
+
     public function update(UpdateRoleRequest $request, Role $role): RedirectResponse
     {
         $this->roleService->updateRole($role, $request->validated());
