@@ -14,8 +14,6 @@ return new class extends Migration
         Schema::create('cities', function (Blueprint $table) {
             $table->id();
             $table->json('name');
-            $table->decimal('x', 10, 7)->nullable();
-            $table->decimal('y', 10, 7)->nullable();
             $table->timestamps();
         });
     }

@@ -24,20 +24,7 @@ class City extends Model
      */
     protected $fillable = [
         'name',
-        'x',
-        'y',
     ];
-
-    /**
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'x' => 'decimal:7',
-            'y' => 'decimal:7',
-        ];
-    }
 
     public function services(): HasMany
     {

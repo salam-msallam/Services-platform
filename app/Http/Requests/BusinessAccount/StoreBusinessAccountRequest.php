@@ -33,6 +33,8 @@ class StoreBusinessAccountRequest extends FormRequest
 
             'license_number' => ['required', 'string', 'max:255'],
             'city_id' => ['required', 'integer', 'exists:cities,id'],
+            'x' => ['required', 'numeric', 'between:-90,90'],
+            'y' => ['required', 'numeric', 'between:-180,180'],
             'activity_type_id' => ['required', 'integer', 'exists:activity_types,id'],
 
             'images' => ['nullable', 'array'],

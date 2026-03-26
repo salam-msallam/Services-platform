@@ -38,6 +38,8 @@ class BusinessAccountService
                     'activities' => $payload['activities'],
                     'license_number' => $payload['license_number'],
                     'city_id' => $payload['city_id'],
+                    'x' => $payload['x'],
+                    'y' => $payload['y'],
                     'activity_type_id' => $payload['activity_type_id'],
                     'status' => StatusEnum::Pending,
                 ]);

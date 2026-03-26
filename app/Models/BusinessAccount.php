@@ -36,6 +36,8 @@ class BusinessAccount extends Model implements HasMedia
         'activities',
         'license_number',
         'city_id',
+        'x',
+        'y',
         'activity_type_id',
         'status',
     ];
@@ -46,6 +48,8 @@ class BusinessAccount extends Model implements HasMedia
     protected function casts(): array
     {
         return [
+            'x' => 'decimal:7',
+            'y' => 'decimal:7',
             'status' => StatusEnum::class,
         ];
     }

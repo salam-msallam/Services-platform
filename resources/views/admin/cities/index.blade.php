@@ -36,8 +36,6 @@
                     <thead class="bg-slate-50 text-slate-500 uppercase tracking-wider text-xs">
                     <tr>
                         <th class="px-4 py-3 {{ app()->getLocale() === 'ar' ? 'text-right' : 'text-left' }}">{{ __('admin.name') }}</th>
-                        <th class="px-4 py-3 {{ app()->getLocale() === 'ar' ? 'text-right' : 'text-left' }}">{{ __('admin.x_coordinate') }}</th>
-                        <th class="px-4 py-3 {{ app()->getLocale() === 'ar' ? 'text-right' : 'text-left' }}">{{ __('admin.y_coordinate') }}</th>
                         <th class="px-4 py-3 {{ app()->getLocale() === 'ar' ? 'text-right' : 'text-left' }}">{{ __('admin.actions') }}</th>
                     </tr>
                     </thead>
@@ -45,8 +43,6 @@
                     @forelse($cities as $city)
                         <tr class="hover:bg-slate-50/80 transition">
                             <td class="px-4 py-3 font-medium text-slate-900">{{ $city->getTranslation('name', app()->getLocale()) }}</td>
-                            <td class="px-4 py-3 text-slate-700">{{ $city->x }}</td>
-                            <td class="px-4 py-3 text-slate-700">{{ $city->y }}</td>
                             <td class="px-4 py-3">
                                 <div class="flex flex-wrap gap-2">
                                     <a href="{{ route('admin.cities.edit', $city) }}" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold">
@@ -64,7 +60,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="px-4 py-12 text-center text-slate-500">
+                            <td colspan="2" class="px-4 py-12 text-center text-slate-500">
                                 {{ __('admin.no_cities') }}
                             </td>
                         </tr>

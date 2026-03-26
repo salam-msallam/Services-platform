@@ -21,26 +21,22 @@ class CityService
     }
 
     /**
-     * @param  array{name: array{ar: string, en: string}, x: float|string|null, y: float|string|null}  $data
+     * @param  array{name: array{ar: string, en: string}}  $data
      */
     public function createCity(array $data): City
     {
         return City::query()->create([
             'name' => $data['name'],
-            'x' => $data['x'] ?? null,
-            'y' => $data['y'] ?? null,
         ]);
     }
 
     /**
-     * @param  array{name: array{ar: string, en: string}, x: float|string|null, y: float|string|null}  $data
+     * @param  array{name: array{ar: string, en: string}}  $data
      */
     public function updateCity(City $city, array $data): City
     {
         $city->update([
             'name' => $data['name'],
-            'x' => $data['x'] ?? null,
-            'y' => $data['y'] ?? null,
         ]);
 
         return $city->fresh();

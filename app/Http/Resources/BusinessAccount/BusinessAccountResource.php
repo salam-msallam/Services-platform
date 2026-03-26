@@ -27,14 +27,14 @@ class BusinessAccountResource extends JsonResource
             'description' => $this->description !== null ? $this->getTranslations('description') : null,
             'activities' => $this->activities !== null ? $this->getTranslations('activities') : null,
             'license_number' => $this->license_number,
+            'x' => $this->x,
+            'y' => $this->y,
             'status' => $statusValue,
             'status_label' => $statusLabel,
             'city' => $this->city !== null
                 ? [
                     'id' => $this->city->id,
                     'name' => $this->city->getTranslations('name'),
-                    'x' => $this->city->x,
-                    'y' => $this->city->y,
                 ]
                 : null,
             'activity_type' => $this->activityType !== null

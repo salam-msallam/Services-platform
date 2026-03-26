@@ -22,8 +22,6 @@ class UpdateCityRequest extends FormRequest
             'name' => ['required', 'array'],
             'name.ar' => ['required', 'string', 'max:255'],
             'name.en' => ['required', 'string', 'max:255'],
-            'x' => ['nullable', 'numeric', 'between:-90,90'],
-            'y' => ['nullable', 'numeric', 'between:-180,180'],
         ];
     }
 }
