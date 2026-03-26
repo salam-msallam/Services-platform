@@ -90,7 +90,21 @@ class BusinessAccountService
         $this->ensureOwnedByUser($user, $businessAccount);
 
         $updated = DB::transaction(function () use ($user, $businessAccount, $payload, $images, $documents): BusinessAccount {
-            $activityTypeId = (int) $payload['activity_type_id'];
+            $activityTypeId = array_key_exists('activity_type_id', $payload)
+                ? (int) $payload['activity_type_id']
+                : (int) $businessAccount->activity_type_id;
+
+            $getOrExisting = static function (string $key, mixed $existing) use ($payload): mixed {
+                return array_key_exists($key, $payload) ? $payload[$key] : $existing;
+            };
+
+            $name = $getOrExisting('name', $businessAccount->name);
+            $description = $getOrExisting('description', $businessAccount->description);
+            $activities = $getOrExisting('activities', $businessAccount->activities);
+            $licenseNumber = $getOrExisting('license_number', $businessAccount->license_number);
+            $cityId = $getOrExisting('city_id', $businessAccount->city_id);
+            $x = $getOrExisting('x', $businessAccount->x);
+            $y = $getOrExisting('y', $businessAccount->y);
 
             $alreadyExists = $user->businessAccounts()
                 ->where('activity_type_id', $activityTypeId)
@@ -103,14 +117,14 @@ class BusinessAccountService
 
             try {
                 $businessAccount->update([
-                    'name' => $payload['name'],
-                    'description' => $payload['description'] ?? null,
-                    'activities' => $payload['activities'],
-                    'license_number' => $payload['license_number'],
-                    'city_id' => $payload['city_id'],
-                    'x' => $payload['x'],
-                    'y' => $payload['y'],
-                    'activity_type_id' => $payload['activity_type_id'],
+                    'name' => $name,
+                    'description' => $description,
+                    'activities' => $activities,
+                    'license_number' => $licenseNumber,
+                    'city_id' => $cityId,
+                    'x' => $x,
+                    'y' => $y,
+                    'activity_type_id' => $activityTypeId,
                     'status' => StatusEnum::Pending,
                 ]);
 

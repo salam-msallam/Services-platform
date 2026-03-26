@@ -8,6 +8,37 @@
             <h1 class="text-2xl font-semibold text-slate-900">{{ __('admin.business_accounts_review') }}</h1>
         </div>
 
+        @php
+            $currentStatus = $status ?? null;
+        @endphp
+
+        <div class="flex flex-wrap gap-2">
+            <a
+                href="{{ route('admin.business-accounts.index') }}"
+                class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold transition {{ $currentStatus === null ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200' }}"
+            >
+                {{ __('admin.all_statuses') }}
+            </a>
+            <a
+                href="{{ route('admin.business-accounts.index', ['status' => 'pending']) }}"
+                class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold transition {{ $currentStatus === 'pending' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200' }}"
+            >
+                {{ __('admin.pending') }}
+            </a>
+            <a
+                href="{{ route('admin.business-accounts.index', ['status' => 'accepted']) }}"
+                class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold transition {{ $currentStatus === 'accepted' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200' }}"
+            >
+                {{ __('admin.accepted') }}
+            </a>
+            <a
+                href="{{ route('admin.business-accounts.index', ['status' => 'rejected']) }}"
+                class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold transition {{ $currentStatus === 'rejected' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200' }}"
+            >
+                {{ __('admin.rejected') }}
+            </a>
+        </div>
+
         @if(session('success'))
             <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl px-4 py-3 text-sm">
                 {{ session('success') }}
@@ -57,6 +88,9 @@
                             <td class="px-4 py-3 text-slate-700">{{ $account->status->value ?? $account->status }}</td>
                             <td class="px-4 py-3">
                                 <div class="flex flex-wrap gap-2">
+                                    <a href="{{ route('admin.business-accounts.show', $account) }}" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold">
+                                        {{ __('admin.view_details') }}
+                                    </a>
                                     @if($account->status->value === 'pending')
                                         @can('approve business accounts')
                                             <form method="POST" action="{{ route('admin.business-accounts.accept', $account) }}">
@@ -82,7 +116,7 @@
                     @empty
                         <tr>
                             <td colspan="6" class="px-4 py-12 text-center text-slate-500">
-                                {{ __('admin.no_pending_business_accounts') }}
+                                {{ __('admin.no_business_accounts') }}
                             </td>
                         </tr>
                     @endforelse

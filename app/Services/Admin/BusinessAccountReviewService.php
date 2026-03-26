@@ -14,16 +14,34 @@ class BusinessAccountReviewService
     /**
      * @return Collection<int, BusinessAccount>
      */
-    public function listPending(): Collection
+    public function listAll(?string $status = null): Collection
     {
-        return BusinessAccount::query()
-            ->where('status', StatusEnum::Pending->value)
+        $query = BusinessAccount::query()
             ->with([
                 'city',
                 'activityType',
+                'user',
             ])
-            ->orderByDesc('created_at')
-            ->get();
+            ->orderByDesc('created_at');
+
+        if (in_array($status, [
+            StatusEnum::Pending->value,
+            StatusEnum::Accepted->value,
+            StatusEnum::Rejected->value,
+        ], true)) {
+            $query->where('status', $status);
+        }
+
+        return $query->get();
+    }
+
+    public function findForReview(BusinessAccount $businessAccount): BusinessAccount
+    {
+        return $businessAccount->load([
+            'city',
+            'activityType',
+            'user',
+        ]);
     }
 
     public function accept(BusinessAccount $businessAccount): BusinessAccount

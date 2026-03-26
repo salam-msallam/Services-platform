@@ -109,6 +109,8 @@ Route::prefix('admin')
                 Route::middleware('permission:approve business accounts|reject business accounts')->group(function (): void {
                     Route::get('business-accounts', [BusinessAccountReviewController::class, 'index'])
                         ->name('business-accounts.index');
+                    Route::get('business-accounts/{businessAccount}', [BusinessAccountReviewController::class, 'show'])
+                        ->name('business-accounts.show');
 
                     Route::post('business-accounts/{businessAccount}/accept', [BusinessAccountReviewController::class, 'accept'])
                         ->middleware('permission:approve business accounts')
