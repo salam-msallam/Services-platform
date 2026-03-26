@@ -15,4 +15,8 @@ return [
     'logout_success' => 'Logged out successfully.',
     'business_account_created' => 'Business account created successfully and is pending review.',
     'business_account_activity_type_already_exists' => 'You already created a business account for this activity type.',
+    'business_accounts_fetched' => 'Business accounts fetched successfully.',
+    'business_account_updated' => 'Business account updated successfully and is pending review.',
+    'business_account_deleted' => 'Business account deleted successfully.',
+    'business_account_forbidden_or_not_found' => 'Business account not found or you are not allowed to access it.',
 ];

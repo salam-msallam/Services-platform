@@ -17,6 +17,12 @@ Route::prefix('auth/app')->group(function (): void {
 });
 
 Route::middleware('auth:api')->group(function (): void {
+    Route::get('business-accounts', [BusinessAccountController::class, 'index'])
+        ->name('business-accounts.index');
     Route::post('business-accounts', [BusinessAccountController::class, 'store'])
         ->name('business-accounts.store');
+    Route::put('business-accounts/{businessAccount}', [BusinessAccountController::class, 'update'])
+        ->name('business-accounts.update');
+    Route::delete('business-accounts/{businessAccount}', [BusinessAccountController::class, 'destroy'])
+        ->name('business-accounts.destroy');
 });

@@ -15,4 +15,8 @@ return [
     'logout_success' => 'تم تسجيل الخروج بنجاح.',
     'business_account_created' => 'تم إنشاء حساب الأعمال بنجاح وهو الآن قيد المراجعة.',
     'business_account_activity_type_already_exists' => 'لقد قمت بالفعل بإنشاء حساب أعمال لنوع النشاط هذا.',
+    'business_accounts_fetched' => 'تم جلب حسابات الأعمال بنجاح.',
+    'business_account_updated' => 'تم تحديث حساب الأعمال بنجاح وهو الآن قيد المراجعة.',
+    'business_account_deleted' => 'تم حذف حساب الأعمال بنجاح.',
+    'business_account_forbidden_or_not_found' => 'حساب الأعمال غير موجود أو لا تملك صلاحية الوصول إليه.',
 ];
