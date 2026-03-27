@@ -38,6 +38,7 @@ class BusinessAccountReviewService
     public function findForReview(BusinessAccount $businessAccount): BusinessAccount
     {
         return $businessAccount->load([
+            'media',
             'city',
             'activityType',
             'user',

@@ -116,8 +116,11 @@
             @else
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                     @foreach($images as $image)
-                        <a href="{{ $image->getUrl() }}" target="_blank" rel="noopener noreferrer" class="block border border-slate-200 rounded-xl overflow-hidden">
-                            <img src="{{ $image->getUrl() }}" alt="business-account-image" class="w-full h-36 object-cover">
+                        @php
+                            $imageUrl = url('storage/'.$image->getPathRelativeToRoot());
+                        @endphp
+                        <a href="{{ $imageUrl }}" target="_blank" rel="noopener noreferrer" title="{{ $image->file_name }}" class="block border border-slate-200 rounded-xl overflow-hidden">
+                            <img src="{{ $imageUrl }}" alt="{{ $image->file_name }}" class="w-full h-36 object-cover">
                         </a>
                     @endforeach
                 </div>
@@ -132,11 +135,77 @@
             @else
                 <div class="space-y-2">
                     @foreach($documents as $document)
-                        <a href="{{ $document->getUrl() }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold">
+                        @php
+                            $documentUrl = url('storage/'.$document->getPathRelativeToRoot());
+                        @endphp
+                        <a href="{{ $documentUrl }}" download class="inline-flex items-center px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold">
                             {{ $document->file_name }}
                         </a>
                     @endforeach
                 </div>
+            @endif
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 space-y-4">
+            <div class="flex items-center justify-between gap-3">
+                <h2 class="text-lg font-semibold text-slate-900">{{ __('admin.location_map') }}</h2>
+                @if(is_numeric($businessAccount->x) && is_numeric($businessAccount->y))
+                    <span class="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
+                        {{ number_format((float) $businessAccount->x, 5) }}, {{ number_format((float) $businessAccount->y, 5) }}
+                    </span>
+                @endif
+            </div>
+            @php
+                $hasCoordinates = is_numeric($businessAccount->x) && is_numeric($businessAccount->y);
+            @endphp
+            @if($hasCoordinates)
+                @php
+                    $x = (float) $businessAccount->x;
+                    $y = (float) $businessAccount->y;
+
+                    $latitude = $x;
+                    $longitude = $y;
+
+                    $primaryValid = abs($latitude) <= 90 && abs($longitude) <= 180;
+                    $swappedValid = abs($y) <= 90 && abs($x) <= 180;
+
+                    if (! $primaryValid && $swappedValid) {
+                        $latitude = $y;
+                        $longitude = $x;
+                    }
+
+                    $delta = 0.01;
+                    $left = $longitude - $delta;
+                    $right = $longitude + $delta;
+                    $top = $latitude + $delta;
+                    $bottom = $latitude - $delta;
+                    $mapSrc = "https://www.openstreetmap.org/export/embed.html?bbox={$left}%2C{$bottom}%2C{$right}%2C{$top}&layer=mapnik&marker={$latitude}%2C{$longitude}";
+                    $openStreetMapUrl = "https://www.openstreetmap.org/?mlat={$latitude}&mlon={$longitude}#map=15/{$latitude}/{$longitude}";
+                @endphp
+
+                <div class="relative w-full h-96 rounded-2xl border border-slate-200 overflow-hidden bg-slate-100 shadow-inner">
+                    <iframe
+                        src="{{ $mapSrc }}"
+                        class="w-full h-full border-0"
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Business account location map"
+                    ></iframe>
+                    <div class="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-slate-900/10 to-transparent"></div>
+                </div>
+
+                <div class="flex items-center justify-end">
+                    <a
+                        href="{{ $openStreetMapUrl }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                    >
+                        Open in OpenStreetMap
+                    </a>
+                </div>
+            @else
+                <p class="text-sm text-slate-500">{{ __('admin.coordinates_unavailable') }}</p>
             @endif
         </div>
     </div>

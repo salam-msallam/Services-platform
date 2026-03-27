@@ -105,6 +105,8 @@ return [
     'rejected' => 'مرفوض',
     'no_images' => 'لا توجد صور مرفوعة.',
     'no_documents' => 'لا توجد مستندات مرفوعة.',
+    'location_map' => 'الموقع على الخريطة',
+    'coordinates_unavailable' => 'الإحداثيات غير متوفرة لهذا الحساب.',
     'no_business_accounts' => 'لا توجد حسابات أعمال.',
     'back_to_business_accounts' => 'العودة إلى حسابات الأعمال',
     'admin_deleted'    => 'تم حذف المشرف بنجاح.',

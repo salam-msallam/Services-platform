@@ -105,6 +105,8 @@ return [
     'rejected' => 'Rejected',
     'no_images' => 'No images uploaded.',
     'no_documents' => 'No documents uploaded.',
+    'location_map' => 'Location on map',
+    'coordinates_unavailable' => 'Coordinates are unavailable for this business account.',
     'no_business_accounts' => 'No business accounts found.',
     'back_to_business_accounts' => 'Back to Business Accounts',
     'admin_deleted'    => 'Administrator deleted successfully.',
