@@ -14,16 +14,22 @@ class BusinessAccountReviewService
     /**
      * @return Collection<int, BusinessAccount>
      */
-    public function listAll(?string $status = null): Collection
+    public function listAll(?string $status = null, string $tab = 'active'): Collection
     {
         $query = BusinessAccount::query()
-            ->whereHas('user')
             ->with([
                 'city',
                 'activityType',
-                'user',
+                'user' => fn ($userQuery) => $userQuery->withTrashed(),
             ])
             ->orderByDesc('created_at');
+
+        if ($tab === 'trashed') {
+            $query->onlyTrashed();
+        } else {
+            $query->whereNull('deleted_at')
+                ->whereHas('user');
+        }
 
         if (in_array($status, [
             StatusEnum::Pending->value,
@@ -80,4 +86,3 @@ class BusinessAccountReviewService
         });
     }
 }
-

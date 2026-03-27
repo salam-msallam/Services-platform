@@ -19,15 +19,21 @@ class AppUserManagementService
     /**
      * @return Collection<int, AppUser>
      */
-    public function listAppUsers(): Collection
+    public function listAppUsers(string $tab = 'active'): Collection
     {
-        return AppUser::query()
-            ->withTrashed()
+        $query = AppUser::query()
             ->with([
-                'user' => fn ($query) => $query->withTrashed(),
+                'user' => fn ($userQuery) => $userQuery->withTrashed(),
             ])
-            ->orderByDesc('created_at')
-            ->get();
+            ->orderByDesc('created_at');
+
+        if ($tab === 'trashed') {
+            $query->onlyTrashed();
+        } else {
+            $query->whereNull('deleted_at');
+        }
+
+        return $query->get();
     }
 
     public function createAppUser(string $name, string $phone, string $password): AppUser

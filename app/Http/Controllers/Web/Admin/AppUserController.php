@@ -9,16 +9,20 @@ use App\Models\AppUser;
 use App\Services\Admin\AppUserManagementService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 class AppUserController extends Controller
 {
     public function __construct(protected AppUserManagementService $appUserManagementService) {}
 
-    public function index(): View
+    public function index(Request $request): View
     {
-        $appUsers = $this->appUserManagementService->listAppUsers();
+        $tab = $request->string('tab')->toString();
+        $tab = in_array($tab, ['active', 'trashed'], true) ? $tab : 'active';
 
-        return view('admin.app-users.index', compact('appUsers'));
+        $appUsers = $this->appUserManagementService->listAppUsers($tab);
+
+        return view('admin.app-users.index', compact('appUsers', 'tab'));
     }
 
     public function create(): View
@@ -69,7 +73,7 @@ class AppUserController extends Controller
         $this->appUserManagementService->restoreAppUser($appUserId);
 
         return redirect()
-            ->route('admin.app-users.index')
+            ->route('admin.app-users.index', ['tab' => 'trashed'])
             ->with('success', __('admin.app_user_restored'));
     }
 }

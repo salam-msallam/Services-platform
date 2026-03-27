@@ -33,6 +33,21 @@
             </div>
         @endif
 
+        <div class="flex flex-wrap gap-2">
+            <a
+                href="{{ route('admin.app-users.index', ['tab' => 'active']) }}"
+                class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold transition {{ ($tab ?? 'active') === 'active' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200' }}"
+            >
+                {{ __('admin.active_users') }}
+            </a>
+            <a
+                href="{{ route('admin.app-users.index', ['tab' => 'trashed']) }}"
+                class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold transition {{ ($tab ?? 'active') === 'trashed' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200' }}"
+            >
+                {{ __('admin.trashed_users') }}
+            </a>
+        </div>
+
         <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
             <div class="p-4">
                 <div class="overflow-x-auto">
@@ -99,7 +114,7 @@
                                             </form>
                                         @endif
 
-                                        @if($appUser->trashed() && auth()->user()?->can('delete user'))
+                                    @if($appUser->trashed() && auth()->user()?->can('delete user'))
                                             <form method="POST" action="{{ route('admin.app-users.restore', $appUser->id) }}">
                                                 @csrf
                                                 <button type="submit" class="inline-flex items-center rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700 hover:bg-indigo-100 transition">

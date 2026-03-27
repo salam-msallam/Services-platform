@@ -10,29 +10,45 @@
 
         @php
             $currentStatus = $status ?? null;
+            $currentTab = $tab ?? 'active';
         @endphp
 
         <div class="flex flex-wrap gap-2">
             <a
-                href="{{ route('admin.business-accounts.index') }}"
+                href="{{ route('admin.business-accounts.index', ['tab' => 'active']) }}"
+                class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold transition {{ $currentTab === 'active' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200' }}"
+            >
+                {{ __('admin.active_business_accounts') }}
+            </a>
+            <a
+                href="{{ route('admin.business-accounts.index', ['tab' => 'trashed']) }}"
+                class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold transition {{ $currentTab === 'trashed' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200' }}"
+            >
+                {{ __('admin.trashed_business_accounts') }}
+            </a>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+            <a
+                href="{{ route('admin.business-accounts.index', ['tab' => $currentTab]) }}"
                 class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold transition {{ $currentStatus === null ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200' }}"
             >
                 {{ __('admin.all_statuses') }}
             </a>
             <a
-                href="{{ route('admin.business-accounts.index', ['status' => 'pending']) }}"
+                href="{{ route('admin.business-accounts.index', ['tab' => $currentTab, 'status' => 'pending']) }}"
                 class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold transition {{ $currentStatus === 'pending' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200' }}"
             >
                 {{ __('admin.pending') }}
             </a>
             <a
-                href="{{ route('admin.business-accounts.index', ['status' => 'accepted']) }}"
+                href="{{ route('admin.business-accounts.index', ['tab' => $currentTab, 'status' => 'accepted']) }}"
                 class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold transition {{ $currentStatus === 'accepted' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200' }}"
             >
                 {{ __('admin.accepted') }}
             </a>
             <a
-                href="{{ route('admin.business-accounts.index', ['status' => 'rejected']) }}"
+                href="{{ route('admin.business-accounts.index', ['tab' => $currentTab, 'status' => 'rejected']) }}"
                 class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold transition {{ $currentStatus === 'rejected' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200' }}"
             >
                 {{ __('admin.rejected') }}
@@ -88,27 +104,33 @@
                             <td class="px-4 py-3 text-slate-700">{{ $account->status->value ?? $account->status }}</td>
                             <td class="px-4 py-3">
                                 <div class="flex flex-wrap gap-2">
-                                    <a href="{{ route('admin.business-accounts.show', $account) }}" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold">
-                                        {{ __('admin.view_details') }}
-                                    </a>
-                                    @if($account->status->value === 'pending')
-                                        @can('approve business accounts')
-                                            <form method="POST" action="{{ route('admin.business-accounts.accept', $account) }}">
-                                                @csrf
-                                                <button type="submit" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold">
-                                                    {{ __('admin.accept') }}
-                                                </button>
-                                            </form>
-                                        @endcan
+                                    @if($currentTab === 'active')
+                                        <a href="{{ route('admin.business-accounts.show', $account) }}" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold">
+                                            {{ __('admin.view_details') }}
+                                        </a>
+                                        @if($account->status->value === 'pending')
+                                            @can('approve business accounts')
+                                                <form method="POST" action="{{ route('admin.business-accounts.accept', $account) }}">
+                                                    @csrf
+                                                    <button type="submit" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold">
+                                                        {{ __('admin.accept') }}
+                                                    </button>
+                                                </form>
+                                            @endcan
 
-                                        @can('reject business accounts')
-                                            <form method="POST" action="{{ route('admin.business-accounts.reject', $account) }}">
-                                                @csrf
-                                                <button type="submit" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold">
-                                                    {{ __('admin.reject') }}
-                                                </button>
-                                            </form>
-                                        @endcan
+                                            @can('reject business accounts')
+                                                <form method="POST" action="{{ route('admin.business-accounts.reject', $account) }}">
+                                                    @csrf
+                                                    <button type="submit" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold">
+                                                        {{ __('admin.reject') }}
+                                                    </button>
+                                                </form>
+                                            @endcan
+                                        @endif
+                                    @else
+                                        <span class="inline-flex items-center px-3 py-1.5 rounded-lg bg-slate-100 text-slate-500 text-xs font-semibold">
+                                            {{ __('admin.trashed') }}
+                                        </span>
                                     @endif
                                 </div>
                             </td>

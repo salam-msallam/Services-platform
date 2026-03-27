@@ -21,11 +21,15 @@ class BusinessAccountReviewController extends Controller
     public function index(Request $request): View
     {
         $status = $request->query('status');
+        $tab = $request->string('tab')->toString();
+        $tab = in_array($tab, ['active', 'trashed'], true) ? $tab : 'active';
+
         $businessAccounts = $this->reviewService->listAll(
-            is_string($status) ? $status : null
+            is_string($status) ? $status : null,
+            $tab
         );
 
-        return view('admin.business-accounts.index', compact('businessAccounts', 'status'));
+        return view('admin.business-accounts.index', compact('businessAccounts', 'status', 'tab'));
     }
 
     public function show(BusinessAccount $businessAccount): View
