@@ -58,7 +58,7 @@ class AppUserAuthService
         $this->otpService->generateAndSendOtpForAppUser($appUser->fresh());
     }
 
-    public function verifyRegistrationOtp(string $phone, string $code): array
+    public function verifyRegistrationOtp(string $phone, string $code)
     {
         $appUser = AppUser::query()
             ->where('phone', $phone)
@@ -79,9 +79,6 @@ class AppUserAuthService
             $appUser->update(['phone_verified_at' => now()]);
         });
 
-        $user = $appUser->user()->with('appUser')->firstOrFail();
-
-        return $this->issueTokenPayload($user);
     }
 
     public function login(string $phone, string $password): array

@@ -35,9 +35,7 @@ class AppUserAuthController
             $request->validated('otp'),
         );
 
-        return ApiResponse::success(
-            AppUserAuthResource::make($result)->toArray($request),
-            __('api.authenticated_success'),
+        return ApiResponse::success([], __('api.authenticated_success'),
         );
     }
 

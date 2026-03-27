@@ -19,23 +19,23 @@ class UpdateBusinessAccountRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'array'],
-            'name.ar' => ['required', 'string', 'max:255'],
-            'name.en' => ['required', 'string', 'max:255'],
+            'name' => ['array'],
+            'name.ar' => ['string', 'max:255'],
+            'name.en' => [ 'string', 'max:255'],
 
             'description' => ['nullable', 'array'],
             'description.ar' => ['nullable', 'string'],
             'description.en' => ['nullable', 'string'],
 
-            'activities' => ['required', 'array'],
-            'activities.ar' => ['required', 'string'],
-            'activities.en' => ['required', 'string'],
+            'activities' => [ 'array'],
+            'activities.ar' => [ 'string'],
+            'activities.en' => ['string'],
 
-            'license_number' => ['required', 'string', 'max:255'],
-            'city_id' => ['required', 'integer', 'exists:cities,id'],
-            'x' => ['required', 'numeric', 'between:-90,90'],
-            'y' => ['required', 'numeric', 'between:-180,180'],
-            'activity_type_id' => ['required', 'integer', 'exists:activity_types,id'],
+            'license_number' => [ 'string', 'max:255'],
+            'city_id' => [ 'integer', 'exists:cities,id'],
+            'x' => [ 'numeric', 'between:-90,90'],
+            'y' => [ 'numeric', 'between:-180,180'],
+            'activity_type_id' => [ 'integer', 'exists:activity_types,id'],
 
             'images' => ['nullable', 'array'],
             'images.*' => ['file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
