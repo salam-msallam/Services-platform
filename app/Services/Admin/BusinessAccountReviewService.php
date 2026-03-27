@@ -17,6 +17,7 @@ class BusinessAccountReviewService
     public function listAll(?string $status = null): Collection
     {
         $query = BusinessAccount::query()
+            ->whereHas('user')
             ->with([
                 'city',
                 'activityType',

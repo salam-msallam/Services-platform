@@ -18,6 +18,7 @@ return new class extends Migration
             $table->enum('type', ['admin', 'app_user']);
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

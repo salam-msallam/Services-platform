@@ -18,6 +18,7 @@ return new class extends Migration
             $table->tinyInteger('rating')->unsigned();
             $table->text('comment')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
             $table->unique(['user_id', 'service_id']);
         });

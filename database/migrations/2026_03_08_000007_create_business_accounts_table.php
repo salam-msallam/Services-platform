@@ -25,6 +25,9 @@ return new class extends Migration
             $table->string('license_number')->nullable();
             $table->string('status')->default(StatusEnum::Pending->value);
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->unique(['user_id', 'activity_type_id'], 'business_accounts_user_activity_type_unique');
         });
     }
 

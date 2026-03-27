@@ -27,6 +27,7 @@ return new class extends Migration
             $table->enum('property_type', ['seller', 'rent']);
             $table->string('status')->default(StatusEnum::Pending->value);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

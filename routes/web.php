@@ -3,6 +3,7 @@
 use App\Http\Controllers\Web\Admin\AdminController;
 use App\Http\Controllers\Web\Admin\AdminDashboardController;
 use App\Http\Controllers\Web\Admin\ActivityTypeController;
+use App\Http\Controllers\Web\Admin\AppUserController;
 use App\Http\Controllers\Web\Admin\CityController;
 use App\Http\Controllers\Web\Admin\RoleController;
 use App\Http\Controllers\Web\Admin\RolePermissionController;
@@ -63,6 +64,32 @@ Route::prefix('admin')
                         ->name('admins.update');
                     Route::delete('admins/{admin}', [AdminController::class, 'destroy'])
                         ->name('admins.destroy');
+                });
+
+                Route::middleware('permission:view users')->group(function (): void {
+                    Route::get('app-users', [AppUserController::class, 'index'])
+                        ->name('app-users.index');
+                });
+
+                Route::middleware('permission:create user')->group(function (): void {
+                    Route::get('app-users/create', [AppUserController::class, 'create'])
+                        ->name('app-users.create');
+                    Route::post('app-users', [AppUserController::class, 'store'])
+                        ->name('app-users.store');
+                });
+
+                Route::middleware('permission:edit user')->group(function (): void {
+                    Route::get('app-users/{appUser}/edit', [AppUserController::class, 'edit'])
+                        ->name('app-users.edit');
+                    Route::put('app-users/{appUser}', [AppUserController::class, 'update'])
+                        ->name('app-users.update');
+                });
+
+                Route::middleware('permission:delete user')->group(function (): void {
+                    Route::delete('app-users/{appUser}', [AppUserController::class, 'destroy'])
+                        ->name('app-users.destroy');
+                    Route::post('app-users/{appUserId}/restore', [AppUserController::class, 'restore'])
+                        ->name('app-users.restore');
                 });
 
                 Route::middleware('permission:manage roles')->group(function (): void {

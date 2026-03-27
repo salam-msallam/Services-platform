@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('service_id')->constrained()->cascadeOnDelete();
             $table->string('status')->default(StatusEnum::Pending->value);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

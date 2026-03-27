@@ -65,6 +65,21 @@ Base path: `/api/auth/app`. Optional header: `Accept-Language: en` or `ar` for t
 | POST | `login` | No | Phone + password for verified users; returns access token (no OTP). |
 | POST | `logout` | Bearer token | Revokes the current access token. |
 
+## Soft-delete retention policy (optional)
+
+For app-user lifecycle management, use a two-phase delete strategy:
+
+1. Immediate soft-delete cascade from `users` into owned records (`app_users`, `business_accounts`, `services`, `orders`, `evaluations`, `favorites`, `reports`).
+2. Scheduled hard-delete purge for records older than a retention period (recommended: 90 days).
+
+Recommended schedule:
+
+- Run daily via Laravel scheduler.
+- Purge deepest children first (`reports`, `favorites`, `evaluations`, `orders`, `services`, `business_accounts`, `app_users`, `users`) to avoid FK conflicts.
+- Keep this purge disabled in local/testing unless explicitly needed.
+
+This keeps restore possible during retention while controlling long-term database growth.
+
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
