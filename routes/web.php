@@ -5,6 +5,7 @@ use App\Http\Controllers\Web\Admin\AdminDashboardController;
 use App\Http\Controllers\Web\Admin\ActivityTypeController;
 use App\Http\Controllers\Web\Admin\AppUserController;
 use App\Http\Controllers\Web\Admin\CityController;
+use App\Http\Controllers\Web\Admin\CategoryController;
 use App\Http\Controllers\Web\Admin\RoleController;
 use App\Http\Controllers\Web\Admin\RolePermissionController;
 use App\Http\Controllers\Web\Admin\BusinessAccountReviewController;
@@ -137,6 +138,23 @@ Route::prefix('admin')
                         ->name('cities.update');
                     Route::delete('cities/{city}', [CityController::class, 'destroy'])
                         ->name('cities.destroy');
+                });
+
+                Route::middleware('permission:manage categories')->group(function (): void {
+                    Route::get('categories', [CategoryController::class, 'index'])
+                        ->name('categories.index');
+                    Route::get('categories/create', [CategoryController::class, 'create'])
+                        ->name('categories.create');
+                    Route::post('categories', [CategoryController::class, 'store'])
+                        ->name('categories.store');
+                    Route::get('categories/{category}', [CategoryController::class, 'show'])
+                        ->name('categories.show');
+                    Route::get('categories/{category}/edit', [CategoryController::class, 'edit'])
+                        ->name('categories.edit');
+                    Route::put('categories/{category}', [CategoryController::class, 'update'])
+                        ->name('categories.update');
+                    Route::delete('categories/{category}', [CategoryController::class, 'destroy'])
+                        ->name('categories.destroy');
                 });
 
                 Route::middleware('role:super-admin|business-auditor')->group(function (): void {
