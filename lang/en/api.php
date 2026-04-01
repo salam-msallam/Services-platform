@@ -19,4 +19,13 @@ return [
     'business_account_updated' => 'Business account updated successfully and is pending review.',
     'business_account_deleted' => 'Business account deleted successfully.',
     'business_account_forbidden_or_not_found' => 'Business account not found or you are not allowed to access it.',
+    'service_created' => 'Service created successfully and is pending review.',
+    'dynamic_values_must_be_empty' => 'No dynamic fields are defined for this category; dynamic_values must be empty.',
+    'dynamic_values_keys_mismatch' => 'dynamic_values keys must match exactly the defined dynamic fields for this category.',
+    'dynamic_field_unknown_type' => 'Invalid dynamic field type in category definition.',
+    'dynamic_field_text_required' => 'This dynamic field must be a non-empty string.',
+    'dynamic_field_number_invalid' => 'This dynamic field must be a number.',
+    'dynamic_field_checkbox_invalid' => 'This dynamic field must be true or false.',
+    'dynamic_field_dropdown_required' => 'This dynamic field must be a non-empty string.',
+    'dynamic_field_dropdown_invalid' => 'This dynamic field must be one of the allowed options.',
 ];

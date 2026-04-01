@@ -21,19 +21,15 @@ class Service extends Model implements HasMedia
     use SoftDeletes;
 
     public const PROPERTY_TYPE_SELLER = 'seller';
+
     public const PROPERTY_TYPE_RENT = 'rent';
 
-    /**
-     * @var array<int, string>
-     */
     public array $translatable = [
         'title',
         'description',
     ];
 
-    /**
-     * @var array<int, string>
-     */
+
     protected $fillable = [
         'business_account_id',
         'category_id',
@@ -46,17 +42,17 @@ class Service extends Model implements HasMedia
         'price',
         'currency',
         'property_type',
+        'dynamic_values',
         'status',
     ];
 
-    /**
-     * @return array<string, string>
-     */
+   
     protected function casts(): array
     {
         return [
             'price' => 'decimal:2',
             'quantity' => 'integer',
+            'dynamic_values' => 'array',
             'status' => StatusEnum::class,
         ];
     }

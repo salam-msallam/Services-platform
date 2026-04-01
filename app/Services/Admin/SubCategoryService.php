@@ -4,41 +4,44 @@ declare(strict_types=1);
 
 namespace App\Services\Admin;
 
-use App\Models\Category;
+use App\Models\SubCategory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
-class CategoryService
+class SubCategoryService
 {
-    public function listCategories(): Collection
+    public function listSubCategories(): Collection
     {
-        return Category::query()
-            ->orderBy('created_at', 'desc')
+        return SubCategory::query()
+            ->with('category')
+            ->orderByDesc('created_at')
             ->get();
     }
 
-    public function createCategory(array $data): Category
+    public function createSubCategory(array $data): SubCategory
     {
-        return Category::query()->create([
+        return SubCategory::query()->create([
+            'category_id' => $data['category_id'],
             'name' => $data['name'],
             'dynamic_fields' => $this->normalizeDynamicFields($data),
         ]);
     }
 
-    public function updateCategory(Category $category, array $data): Category
+    public function updateSubCategory(SubCategory $subCategory, array $data): SubCategory
     {
-        $category->update([
+        $subCategory->update([
+            'category_id' => $data['category_id'],
             'name' => $data['name'],
             'dynamic_fields' => $this->normalizeDynamicFields($data),
         ]);
 
-        return $category->fresh();
+        return $subCategory->fresh();
     }
 
-    public function deleteCategory(Category $category): void
+    public function deleteSubCategory(SubCategory $subCategory): void
     {
-        DB::transaction(static function () use ($category): void {
-            $category->delete();
+        DB::transaction(static function () use ($subCategory): void {
+            $subCategory->delete();
         });
     }
 

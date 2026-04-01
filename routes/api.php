@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\Api\BusinessAccount\BusinessAccountController;
 use App\Http\Controllers\Api\Auth\AppUserAuthController;
+use App\Http\Controllers\Api\BusinessAccount\BusinessAccountController;
+use App\Http\Controllers\Api\Service\ServiceController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth/app')->group(function (): void {
@@ -25,4 +26,7 @@ Route::middleware('auth:api')->group(function (): void {
         ->name('business-accounts.update');
     Route::delete('business-accounts/{businessAccount}', [BusinessAccountController::class, 'destroy'])
         ->name('business-accounts.destroy');
+
+    Route::post('services', [ServiceController::class, 'store'])
+        ->name('services.store');
 });
