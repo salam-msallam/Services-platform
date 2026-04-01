@@ -1,14 +1,16 @@
 <?php
 
+use App\Http\Controllers\Web\Admin\ActivityTypeController;
 use App\Http\Controllers\Web\Admin\AdminController;
 use App\Http\Controllers\Web\Admin\AdminDashboardController;
-use App\Http\Controllers\Web\Admin\ActivityTypeController;
 use App\Http\Controllers\Web\Admin\AppUserController;
-use App\Http\Controllers\Web\Admin\CityController;
+use App\Http\Controllers\Web\Admin\BusinessAccountReviewController;
 use App\Http\Controllers\Web\Admin\CategoryController;
+use App\Http\Controllers\Web\Admin\CityController;
 use App\Http\Controllers\Web\Admin\RoleController;
 use App\Http\Controllers\Web\Admin\RolePermissionController;
-use App\Http\Controllers\Web\Admin\BusinessAccountReviewController;
+use App\Http\Controllers\Web\Admin\ServiceReviewController;
+use App\Http\Controllers\Web\Admin\SubCategoryController;
 use App\Http\Controllers\Web\LoginController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
@@ -157,6 +159,23 @@ Route::prefix('admin')
                         ->name('categories.destroy');
                 });
 
+                Route::middleware('permission:manage sub-categories')->group(function (): void {
+                    Route::get('sub-categories', [SubCategoryController::class, 'index'])
+                        ->name('sub-categories.index');
+                    Route::get('sub-categories/create', [SubCategoryController::class, 'create'])
+                        ->name('sub-categories.create');
+                    Route::post('sub-categories', [SubCategoryController::class, 'store'])
+                        ->name('sub-categories.store');
+                    Route::get('sub-categories/{subCategory}', [SubCategoryController::class, 'show'])
+                        ->name('sub-categories.show');
+                    Route::get('sub-categories/{subCategory}/edit', [SubCategoryController::class, 'edit'])
+                        ->name('sub-categories.edit');
+                    Route::put('sub-categories/{subCategory}', [SubCategoryController::class, 'update'])
+                        ->name('sub-categories.update');
+                    Route::delete('sub-categories/{subCategory}', [SubCategoryController::class, 'destroy'])
+                        ->name('sub-categories.destroy');
+                });
+
                 Route::middleware('role:super-admin|business-auditor')->group(function (): void {
                     Route::get('business-accounts', [BusinessAccountReviewController::class, 'index'])
                         ->name('business-accounts.index');
@@ -170,6 +189,21 @@ Route::prefix('admin')
                     Route::post('business-accounts/{businessAccount}/reject', [BusinessAccountReviewController::class, 'reject'])
                         ->middleware('permission:reject business accounts')
                         ->name('business-accounts.reject');
+                });
+
+                Route::middleware('role:super-admin|service-moderator')->group(function (): void {
+                    Route::get('services', [ServiceReviewController::class, 'index'])
+                        ->name('services.index');
+                    Route::get('services/{service}', [ServiceReviewController::class, 'show'])
+                        ->name('services.show');
+
+                    Route::post('services/{service}/accept', [ServiceReviewController::class, 'accept'])
+                        ->middleware('permission:approve services')
+                        ->name('services.accept');
+
+                    Route::post('services/{service}/reject', [ServiceReviewController::class, 'reject'])
+                        ->middleware('permission:reject services')
+                        ->name('services.reject');
                 });
 
                 Route::middleware('permission:assign role permissions')->group(function (): void {

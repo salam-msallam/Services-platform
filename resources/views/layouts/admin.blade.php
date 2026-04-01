@@ -123,6 +123,22 @@
                     </li>
                 @endhasanyrole
 
+                @hasanyrole('super-admin|service-moderator')
+                    <li>
+                        <a
+                            href="{{ route('admin.services.index') }}"
+                            class="group flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition
+                                {{ request()->routeIs('admin.services.*') ? 'bg-indigo-600 text-white' : 'text-indigo-100 hover:bg-indigo-900/60 hover:text-white' }}"
+                        >
+                            <svg class="shrink-0" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 5h16v14H4V5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                                <path d="M8 9h8M8 13h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            {{ __('admin.services_review_menu') }}
+                        </a>
+                    </li>
+                @endhasanyrole
+
                 @can('manage cities')
                     <li>
                         <a
@@ -151,6 +167,21 @@
                                 <path d="M8 9h8M8 13h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                             </svg>
                             {{ __('admin.manage_categories') }}
+                        </a>
+                    </li>
+                @endcan
+
+                @can('manage sub-categories')
+                    <li>
+                        <a
+                            href="{{ route('admin.sub-categories.index') }}"
+                            class="group flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition
+                                {{ request()->routeIs('admin.sub-categories.*') ? 'bg-indigo-600 text-white' : 'text-indigo-100 hover:bg-indigo-900/60 hover:text-white' }}"
+                        >
+                            <svg class="shrink-0" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 6h16M4 12h10M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            {{ __('admin.manage_sub_categories') }}
                         </a>
                     </li>
                 @endcan
