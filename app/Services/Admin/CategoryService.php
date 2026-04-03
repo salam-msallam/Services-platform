@@ -65,10 +65,10 @@ class CategoryService
                     $out['options'] = is_array($opts)
                         ? array_values(array_filter(
                             array_map(
-                                static fn (mixed $o): string => is_string($o) ? trim($o) : '',
+                                static fn(mixed $o): string => is_string($o) ? trim($o) : '',
                                 $opts
                             ),
-                            static fn (string $s): bool => $s !== ''
+                            static fn(string $s): bool => $s !== ''
                         ))
                         : [];
                 }

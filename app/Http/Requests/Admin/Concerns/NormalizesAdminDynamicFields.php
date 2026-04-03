@@ -42,8 +42,8 @@ trait NormalizesAdminDynamicFields
                 if (is_string($raw) && $raw !== '') {
                     $lines = preg_split('/\r\n|\r|\n/', $raw) ?: [];
                     $opts = array_values(array_filter(
-                        array_map(static fn (string $s): string => trim($s), $lines),
-                        static fn (string $s): bool => $s !== ''
+                        array_map(static fn(string $s): string => trim($s), $lines),
+                        static fn(string $s): bool => $s !== ''
                     ));
                 }
 
@@ -106,7 +106,7 @@ trait NormalizesAdminDynamicFields
 
             $nonEmpty = array_filter(
                 $opts,
-                static fn (mixed $o): bool => is_string($o) && trim($o) !== ''
+                static fn(mixed $o): bool => is_string($o) && trim($o) !== ''
             );
 
             if ($nonEmpty === []) {
