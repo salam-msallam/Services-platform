@@ -22,11 +22,20 @@ Route::middleware('auth:api')->group(function (): void {
         ->name('business-accounts.index');
     Route::post('business-accounts', [BusinessAccountController::class, 'store'])
         ->name('business-accounts.store');
-    Route::put('business-accounts/{businessAccount}', [BusinessAccountController::class, 'update'])
+    Route::patch('business-accounts/{businessAccount}', [BusinessAccountController::class, 'update'])
         ->name('business-accounts.update');
     Route::delete('business-accounts/{businessAccount}', [BusinessAccountController::class, 'destroy'])
         ->name('business-accounts.destroy');
 
+    Route::get('services', [ServiceController::class, 'index'])
+        ->name('services.index');
     Route::post('services', [ServiceController::class, 'store'])
         ->name('services.store');
+    Route::get('services/{service}', [ServiceController::class, 'show'])
+        ->name('services.show');
+    // PUT and PATCH both hit update (Postman/tools sometimes default to PUT).
+    Route::patch('services/{service}', [ServiceController::class, 'update'])
+        ->name('services.update');
+    Route::delete('services/{service}', [ServiceController::class, 'destroy'])
+        ->name('services.destroy');
 });

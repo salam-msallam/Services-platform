@@ -14,7 +14,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
-class StoreServiceRequest extends FormRequest
+class UpdateServiceRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -48,6 +48,7 @@ class StoreServiceRequest extends FormRequest
     {
         return [
             'business_account_id' => [
+                'sometimes',
                 'required',
                 'integer',
                 Rule::exists('business_accounts', 'id')
@@ -55,32 +56,36 @@ class StoreServiceRequest extends FormRequest
                     ->where('status', StatusEnum::Accepted->value)
                     ->whereNull('deleted_at'),
             ],
-            'category_id' => ['required', 'integer', 'exists:categories,id'],
+            'category_id' => ['sometimes', 'required', 'integer', 'exists:categories,id'],
             'sub_category_id' => [
                 'nullable',
                 'integer',
-                Rule::exists('sub_categories', 'id')->where(
-                    fn($query) => $query->where('category_id', (int) $this->input('category_id'))
-                ),
+                Rule::exists('sub_categories', 'id')->where(function ($query) {
+                    $service = $this->route('service');
+                    $categoryId = (int) ($this->input('category_id') ?? ($service instanceof Service ? $service->category_id : 0));
+
+                    return $query->where('category_id', $categoryId);
+                }),
             ],
-            'city_id' => ['required', 'integer', 'exists:cities,id'],
-            'title' => ['required', 'array'],
-            'title.ar' => ['required', 'string', 'max:255'],
-            'title.en' => ['required', 'string', 'max:255'],
+            'city_id' => ['sometimes', 'required', 'integer', 'exists:cities,id'],
+            'title' => ['sometimes', 'required', 'array'],
+            'title.ar' => ['sometimes', 'required', 'string', 'max:255'],
+            'title.en' => ['sometimes', 'required', 'string', 'max:255'],
             'description' => ['nullable', 'array'],
             'description.ar' => ['nullable', 'string'],
             'description.en' => ['nullable', 'string'],
-            'quantity' => ['required', 'integer', 'min:1'],
-            'work_type' => ['required', 'string', 'max:255'],
-            'price' => ['required', 'numeric', 'min:0'],
-            'currency' => ['required', 'string', Rule::in(Service::ALLOWED_CURRENCIES)],
+            'quantity' => ['sometimes', 'required', 'integer', 'min:1'],
+            'work_type' => ['sometimes', 'required', 'string', 'max:255'],
+            'price' => ['sometimes', 'required', 'numeric', 'min:0'],
+            'currency' => ['sometimes', 'required', 'string', Rule::in(Service::ALLOWED_CURRENCIES)],
             'property_type' => [
+                'sometimes',
                 'required',
                 'string',
                 Rule::in([Service::PROPERTY_TYPE_SELLER, Service::PROPERTY_TYPE_RENT]),
             ],
             'dynamic_values' => ['nullable', 'array'],
-            'main_image' => ['required', 'file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
+            'main_image' => ['nullable', 'file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
             'images' => ['nullable', 'array'],
             'images.*' => ['file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
         ];
@@ -89,7 +94,17 @@ class StoreServiceRequest extends FormRequest
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $v): void {
-            $categoryId = (int) $this->input('category_id');
+            if (! $this->has('dynamic_values')) {
+                return;
+            }
+
+            $service = $this->route('service');
+
+            if (! $service instanceof Service) {
+                return;
+            }
+
+            $categoryId = (int) ($this->input('category_id') ?? $service->category_id);
 
             if ($categoryId < 1) {
                 return;
@@ -103,6 +118,10 @@ class StoreServiceRequest extends FormRequest
 
             $subCategoryId = $this->input('sub_category_id');
             $subCategory = null;
+
+            if ($subCategoryId === null || $subCategoryId === '') {
+                $subCategoryId = $service->sub_category_id;
+            }
 
             if ($subCategoryId !== null && $subCategoryId !== '') {
                 $subCategory = SubCategory::query()->find((int) $subCategoryId);
@@ -119,3 +138,4 @@ class StoreServiceRequest extends FormRequest
         });
     }
 }
+

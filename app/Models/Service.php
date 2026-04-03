@@ -24,6 +24,18 @@ class Service extends Model implements HasMedia
 
     public const PROPERTY_TYPE_RENT = 'rent';
 
+    public const CURRENCY_USD = 'USD';
+
+    public const CURRENCY_SYP = 'SYP';
+
+    /**
+     * @var list<string>
+     */
+    public const ALLOWED_CURRENCIES = [
+        self::CURRENCY_USD,
+        self::CURRENCY_SYP,
+    ];
+
     public array $translatable = [
         'title',
         'description',
