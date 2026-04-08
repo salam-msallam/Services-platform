@@ -21,6 +21,9 @@ class Order extends Model
         'business_account_id',
         'service_id',
         'status',
+        'quantity',
+        'date_of_need',
+        'time_of_need',
     ];
 
     /**
@@ -30,6 +33,9 @@ class Order extends Model
     {
         return [
             'status' => StatusEnum::class,
+            'quantity' => 'integer',
+            'date_of_need' => 'date',
+            'time_of_need' => 'integer',
         ];
     }
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Auth\AppUserAuthController;
 use App\Http\Controllers\Api\BusinessAccount\BusinessAccountController;
+use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Controllers\Api\Service\ServiceController;
 use App\Http\Controllers\Api\Service\ServiceIndexController;
 use Illuminate\Support\Facades\Route;
@@ -41,4 +42,7 @@ Route::middleware('auth:api')->group(function (): void {
         ->name('services.update');
     Route::delete('services/{service}', [ServiceController::class, 'destroy'])
         ->name('services.destroy');
+
+    Route::post('orders', [OrderController::class, 'store'])
+        ->name('orders.store');
 });

@@ -35,4 +35,8 @@ return [
     'dynamic_field_checkbox_invalid' => 'يجب أن يكون هذا الحقل true أو false.',
     'dynamic_field_dropdown_required' => 'يجب أن يكون هذا الحقل نصاً غير فارغ.',
     'dynamic_field_dropdown_invalid' => 'يجب أن تكون قيمة هذا الحقل من الخيارات المسموحة.',
+    'order_created' => 'تم إنشاء الطلب بنجاح.',
+    'order_cannot_order_own_service' => 'لا يمكنك طلب خدمتك الخاصة.',
+    'order_date_of_need_required_rent' => 'تاريخ الحاجة مطلوب لهذا النوع من الخدمات.',
+    'order_time_of_need_required_rent' => 'وقت الحاجة مطلوب لهذا النوع من الخدمات.',
 ];
