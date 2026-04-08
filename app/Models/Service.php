@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\StatusEnum;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -105,6 +106,32 @@ class Service extends Model implements HasMedia
     public function evaluations(): HasMany
     {
         return $this->hasMany(Evaluation::class);
+    }
+
+    protected function averageRating(): Attribute
+    {
+        return Attribute::get(function (): ?float {
+            if (array_key_exists('evaluations_avg_rating', $this->attributes)) {
+                $raw = $this->attributes['evaluations_avg_rating'];
+
+                return $raw === null ? null : round((float) $raw, 1);
+            }
+
+            $avg = $this->evaluations()->avg('rating');
+
+            return $avg === null ? null : round((float) $avg, 1);
+        });
+    }
+
+    protected function ratingsCount(): Attribute
+    {
+        return Attribute::get(function (): int {
+            if (array_key_exists('evaluations_count', $this->attributes)) {
+                return (int) $this->attributes['evaluations_count'];
+            }
+
+            return (int) $this->evaluations()->count();
+        });
     }
 
     public function favoritedBy(): BelongsToMany

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Auth\AppUserAuthController;
 use App\Http\Controllers\Api\BusinessAccount\BusinessAccountController;
+use App\Http\Controllers\Api\Evaluation\EvaluationsController;
 use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Controllers\Api\Service\ServiceController;
 use App\Http\Controllers\Api\Service\ServiceIndexController;
@@ -55,4 +56,7 @@ Route::middleware('auth:api')->group(function (): void {
         ->name('orders.update-my');
     Route::post('orders', [OrderController::class, 'store'])
         ->name('orders.store');
+
+    Route::post('evaluations', [EvaluationsController::class, 'store'])
+        ->name('evaluations.store');
 });

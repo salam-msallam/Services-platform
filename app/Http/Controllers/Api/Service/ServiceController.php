@@ -32,6 +32,8 @@ class ServiceController
 
         $services = Service::query()
             ->with(['businessAccount', 'category', 'subCategory', 'city', 'media'])
+            ->withAvg('evaluations', 'rating')
+            ->withCount('evaluations')
             ->whereHas('businessAccount', fn ($q) => $q->where('user_id', $user->id))
             ->orderByDesc('created_at')
             ->get();
@@ -55,6 +57,8 @@ class ServiceController
         }
 
         $service->load(['businessAccount', 'category', 'subCategory', 'city', 'media']);
+        $service->loadAvg('evaluations', 'rating');
+        $service->loadCount('evaluations');
 
         return ApiResponse::success(
             ServiceResource::make($service)->toArray($request),
@@ -81,6 +85,8 @@ class ServiceController
             $mainImage,
             is_array($images) ? $images : [],
         );
+        $service->loadAvg('evaluations', 'rating');
+        $service->loadCount('evaluations');
 
         return ApiResponse::success(
             ServiceResource::make($service)->toArray($request),
@@ -120,6 +126,8 @@ class ServiceController
             $mainImage,
             $images,
         );
+        $updated->loadAvg('evaluations', 'rating');
+        $updated->loadCount('evaluations');
 
         return ApiResponse::success(
             ServiceResource::make($updated)->toArray($request),

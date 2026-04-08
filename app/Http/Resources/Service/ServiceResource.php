@@ -39,6 +39,8 @@ class ServiceResource extends JsonResource
             'dynamic_values' => $this->dynamic_values,
             'status' => $statusValue,
             'status_label' => $statusLabel,
+            'average_rating' => $this->average_rating,
+            'ratings_count' => $this->ratings_count,
             'city' => $this->city !== null
                 ? [
                     'id' => $this->city->id,

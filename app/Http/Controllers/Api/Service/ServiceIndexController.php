@@ -23,6 +23,8 @@ class ServiceIndexController
         $query = Service::query()
             ->where('status', StatusEnum::Accepted)
             ->with(['businessAccount', 'category', 'subCategory', 'city', 'media'])
+            ->withAvg('evaluations', 'rating')
+            ->withCount('evaluations')
             ->orderByDesc('created_at');
 
         if (isset($validated['city_id'])) {
