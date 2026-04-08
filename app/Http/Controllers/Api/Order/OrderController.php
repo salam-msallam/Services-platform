@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\Order;
 
 use App\Http\Requests\Order\IndexReceivedOrdersRequest;
+use App\Http\Requests\Order\MyOrdersRequest;
 use App\Http\Requests\Order\StoreOrderRequest;
+use App\Http\Requests\Order\UpdateMyOrderRequest;
 use App\Http\Resources\Order\OrderResource;
 use App\Http\Responses\ApiResponse;
 use App\Models\Order;
@@ -35,6 +37,24 @@ class OrderController
         ];
 
         return ApiResponse::success($payload, __('api.orders_received_fetched'));
+    }
+
+    public function indexMyOrders(MyOrdersRequest $request): JsonResponse
+    {
+        $user = $request->user();
+
+        if (! $user instanceof User) {
+            return ApiResponse::error(__('auth.unauthenticated'), [], 401);
+        }
+
+        $result = $this->orderService->indexMyOrders($user, $request->validated());
+
+        $payload = [
+            'items' => OrderResource::collection($result['items'])->resolve(),
+            'pagination' => $result['pagination'],
+        ];
+
+        return ApiResponse::success($payload, __('api.my_orders_fetched'));
     }
 
     public function store(StoreOrderRequest $request): JsonResponse
@@ -98,6 +118,30 @@ class OrderController
         return ApiResponse::success(
             OrderResource::make($updatedOrder)->toArray($request),
             __('api.order_rejected'),
+        );
+    }
+
+    public function updateMyOrder(UpdateMyOrderRequest $request, Order $order): JsonResponse
+    {
+        $user = $request->user();
+
+        if (! $user instanceof User) {
+            return ApiResponse::error(__('auth.unauthenticated'), [], 401);
+        }
+
+        try {
+            $updatedOrder = $this->orderService->updateMyOrder($order, $user, $request->validated());
+        } catch (DomainException $exception) {
+            return ApiResponse::error(__('api.order_update_not_allowed'), [], 422);
+        }
+
+        if (! $updatedOrder instanceof Order) {
+            return ApiResponse::error(__('auth.unauthorized'), [], 403);
+        }
+
+        return ApiResponse::success(
+            OrderResource::make($updatedOrder)->toArray($request),
+            __('api.order_updated'),
         );
     }
 }

@@ -43,4 +43,7 @@ return [
     'order_accepted' => 'Order accepted successfully.',
     'order_rejected' => 'Order rejected successfully.',
     'order_status_update_not_allowed' => 'Only pending orders can be accepted or rejected.',
+    'my_orders_fetched' => 'My orders fetched successfully.',
+    'order_updated' => 'Order updated successfully.',
+    'order_update_not_allowed' => 'Only pending orders can be updated.',
 ];

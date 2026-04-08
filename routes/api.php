@@ -45,10 +45,14 @@ Route::middleware('auth:api')->group(function (): void {
 
     Route::get('orders/received', [OrderController::class, 'indexReceived'])
         ->name('orders.received');
+    Route::get('orders/my', [OrderController::class, 'indexMyOrders'])
+        ->name('orders.my');
     Route::patch('orders/{order}/accept', [OrderController::class, 'accept'])
         ->name('orders.accept');
     Route::patch('orders/{order}/reject', [OrderController::class, 'reject'])
         ->name('orders.reject');
+    Route::patch('orders/{order}', [OrderController::class, 'updateMyOrder'])
+        ->name('orders.update-my');
     Route::post('orders', [OrderController::class, 'store'])
         ->name('orders.store');
 });

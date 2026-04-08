@@ -43,4 +43,7 @@ return [
     'order_accepted' => 'تم قبول الطلب بنجاح.',
     'order_rejected' => 'تم رفض الطلب بنجاح.',
     'order_status_update_not_allowed' => 'يمكن قبول أو رفض الطلبات قيد الانتظار فقط.',
+    'my_orders_fetched' => 'تم جلب طلباتي بنجاح.',
+    'order_updated' => 'تم تحديث الطلب بنجاح.',
+    'order_update_not_allowed' => 'يمكن تحديث الطلبات قيد الانتظار فقط.',
 ];
