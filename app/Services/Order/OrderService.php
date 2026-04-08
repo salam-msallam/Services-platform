@@ -7,13 +7,13 @@ namespace App\Services\Order;
 use App\Enums\StatusEnum;
 use App\Models\Order;
 use App\Models\User;
+use DomainException;
 use Illuminate\Support\Facades\DB;
 
 class OrderService
 {
-    /**
-     * @param  array<string, mixed>  $data
-     */
+    private const ERROR_ORDER_STATUS_UPDATE_NOT_ALLOWED = 'order_status_update_not_allowed';
+
     public function store(array $data): Order
     {
         return DB::transaction(function () use ($data): Order {
@@ -61,5 +61,33 @@ class OrderService
                 'to' => $paginator->lastItem(),
             ],
         ];
+    }
+
+    public function accept(Order $order, User $user): ?Order
+    {
+        return $this->updateStatus($order, $user, StatusEnum::Accepted);
+    }
+
+    public function reject(Order $order, User $user): ?Order
+    {
+        return $this->updateStatus($order, $user, StatusEnum::Rejected);
+    }
+
+    private function updateStatus(Order $order, User $user, StatusEnum $status): ?Order
+    {
+        $order->loadMissing('service.businessAccount');
+
+        $ownerId = $order->service?->businessAccount?->user_id;
+        if ((int) $ownerId !== (int) $user->id) {
+            return null;
+        }
+
+        if ($order->status !== StatusEnum::Pending) {
+            throw new DomainException(self::ERROR_ORDER_STATUS_UPDATE_NOT_ALLOWED);
+        }
+
+        $order->update(['status' => $status]);
+
+        return $order->refresh()->load('businessAccount');
     }
 }

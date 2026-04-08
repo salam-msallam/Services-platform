@@ -40,4 +40,7 @@ return [
     'order_date_of_need_required_rent' => 'تاريخ الحاجة مطلوب لهذا النوع من الخدمات.',
     'order_time_of_need_required_rent' => 'وقت الحاجة مطلوب لهذا النوع من الخدمات.',
     'orders_received_fetched' => 'تم جلب الطلبات الواردة بنجاح.',
+    'order_accepted' => 'تم قبول الطلب بنجاح.',
+    'order_rejected' => 'تم رفض الطلب بنجاح.',
+    'order_status_update_not_allowed' => 'يمكن قبول أو رفض الطلبات قيد الانتظار فقط.',
 ];

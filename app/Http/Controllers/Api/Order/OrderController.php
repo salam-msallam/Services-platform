@@ -8,9 +8,12 @@ use App\Http\Requests\Order\IndexReceivedOrdersRequest;
 use App\Http\Requests\Order\StoreOrderRequest;
 use App\Http\Resources\Order\OrderResource;
 use App\Http\Responses\ApiResponse;
+use App\Models\Order;
 use App\Models\User;
 use App\Services\Order\OrderService;
+use DomainException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class OrderController
 {
@@ -47,6 +50,54 @@ class OrderController
         return ApiResponse::success(
             OrderResource::make($order)->toArray($request),
             __('api.order_created'),
+        );
+    }
+
+    public function accept(Order $order, Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        if (! $user instanceof User) {
+            return ApiResponse::error(__('auth.unauthenticated'), [], 401);
+        }
+
+        try {
+            $updatedOrder = $this->orderService->accept($order, $user);
+        } catch (DomainException $exception) {
+            return ApiResponse::error(__('api.order_status_update_not_allowed'), [], 422);
+        }
+
+        if (! $updatedOrder instanceof Order) {
+            return ApiResponse::error(__('auth.unauthorized'), [], 403);
+        }
+
+        return ApiResponse::success(
+            OrderResource::make($updatedOrder)->toArray($request),
+            __('api.order_accepted'),
+        );
+    }
+
+    public function reject(Order $order, \Illuminate\Http\Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        if (! $user instanceof User) {
+            return ApiResponse::error(__('auth.unauthenticated'), [], 401);
+        }
+
+        try {
+            $updatedOrder = $this->orderService->reject($order, $user);
+        } catch (DomainException $exception) {
+            return ApiResponse::error(__('api.order_status_update_not_allowed'), [], 422);
+        }
+
+        if (! $updatedOrder instanceof Order) {
+            return ApiResponse::error(__('auth.unauthorized'), [], 403);
+        }
+
+        return ApiResponse::success(
+            OrderResource::make($updatedOrder)->toArray($request),
+            __('api.order_rejected'),
         );
     }
 }
