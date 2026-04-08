@@ -39,4 +39,5 @@ return [
     'order_cannot_order_own_service' => 'You cannot order your own service.',
     'order_date_of_need_required_rent' => 'The date of need is required for this service type.',
     'order_time_of_need_required_rent' => 'The time of need is required for this service type.',
+    'orders_received_fetched' => 'Received orders fetched successfully.',
 ];

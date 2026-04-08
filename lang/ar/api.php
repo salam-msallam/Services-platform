@@ -39,4 +39,5 @@ return [
     'order_cannot_order_own_service' => 'لا يمكنك طلب خدمتك الخاصة.',
     'order_date_of_need_required_rent' => 'تاريخ الحاجة مطلوب لهذا النوع من الخدمات.',
     'order_time_of_need_required_rent' => 'وقت الحاجة مطلوب لهذا النوع من الخدمات.',
+    'orders_received_fetched' => 'تم جلب الطلبات الواردة بنجاح.',
 ];

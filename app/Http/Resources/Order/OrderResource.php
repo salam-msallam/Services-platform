@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Resources\Order;
 
 use App\Enums\StatusEnum;
+use App\Http\Resources\BusinessAccount\BusinessAccountResource;
+use App\Http\Resources\Service\ServiceResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -28,6 +30,10 @@ class OrderResource extends JsonResource
             'time_of_need' => $this->time_of_need,
             'status' => $statusValue,
             'status_label' => $statusLabel,
+            'requester' => $this->when(
+                $this->relationLoaded('businessAccount') && $this->businessAccount !== null,
+                fn () => BusinessAccountResource::make($this->businessAccount),
+            ),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

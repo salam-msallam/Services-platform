@@ -43,6 +43,8 @@ Route::middleware('auth:api')->group(function (): void {
     Route::delete('services/{service}', [ServiceController::class, 'destroy'])
         ->name('services.destroy');
 
+    Route::get('orders/received', [OrderController::class, 'indexReceived'])
+        ->name('orders.received');
     Route::post('orders', [OrderController::class, 'store'])
         ->name('orders.store');
 });
