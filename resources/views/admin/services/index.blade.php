@@ -111,7 +111,10 @@
                             </td>
                             <td class="px-4 py-3 text-slate-700">{{ $cityName }}</td>
                             <td class="px-4 py-3 text-slate-700">
-                                {{ $service->price }} {{ $service->currency }}
+                                <div class="leading-5">
+                                    <div>SYP: {{ $service->price_syp ?? '-' }}</div>
+                                    <div>USD: {{ $service->price_usd ?? '-' }}</div>
+                                </div>
                             </td>
                             <td class="px-4 py-3 text-slate-700">{{ $statusValue }}</td>
                             <td class="px-4 py-3">

@@ -49,6 +49,12 @@ class ServiceUpdateService
                 $data['description'] = $incoming === [] ? null : array_replace($existing, $incoming);
             }
 
+            // Keep legacy pricing columns in sync while dual-currency fields are primary.
+            if (array_key_exists('price_usd', $data)) {
+                $data['price'] = $data['price_usd'];
+                $data['currency'] = Service::CURRENCY_USD;
+            }
+
             // Any update returns service to pending for moderation.
             $data['status'] = StatusEnum::Pending;
 

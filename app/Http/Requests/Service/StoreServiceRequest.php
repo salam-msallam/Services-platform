@@ -72,8 +72,10 @@ class StoreServiceRequest extends FormRequest
             'description.en' => ['nullable', 'string'],
             'quantity' => ['required', 'integer', 'min:1'],
             'work_type' => ['required', 'string', 'max:255'],
-            'price' => ['required', 'numeric', 'min:0'],
-            'currency' => ['required', 'string', Rule::in(Service::ALLOWED_CURRENCIES)],
+            'price_syp' => ['required', 'numeric', 'min:0'],
+            'price_usd' => ['required', 'numeric', 'min:0'],
+            'latitude' => ['required', 'numeric'],
+            'longitude' => ['required', 'numeric'],
             'property_type' => [
                 'required',
                 'string',

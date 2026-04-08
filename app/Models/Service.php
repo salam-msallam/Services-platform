@@ -52,7 +52,11 @@ class Service extends Model implements HasMedia
         'quantity',
         'work_type',
         'price',
+        'price_syp',
+        'price_usd',
         'currency',
+        'latitude',
+        'longitude',
         'property_type',
         'dynamic_values',
         'status',
@@ -63,6 +67,10 @@ class Service extends Model implements HasMedia
     {
         return [
             'price' => 'decimal:2',
+            'price_syp' => 'integer',
+            'price_usd' => 'decimal:2',
+            'latitude' => 'decimal:8',
+            'longitude' => 'decimal:8',
             'quantity' => 'integer',
             'dynamic_values' => 'array',
             'status' => StatusEnum::class,

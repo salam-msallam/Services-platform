@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Auth\AppUserAuthController;
 use App\Http\Controllers\Api\BusinessAccount\BusinessAccountController;
 use App\Http\Controllers\Api\Service\ServiceController;
+use App\Http\Controllers\Api\Service\ServiceIndexController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth/app')->group(function (): void {
@@ -29,6 +30,8 @@ Route::middleware('auth:api')->group(function (): void {
 
     Route::get('services', [ServiceController::class, 'index'])
         ->name('services.index');
+    Route::get('services/browse', ServiceIndexController::class)
+        ->name('services.browse');
     Route::post('services', [ServiceController::class, 'store'])
         ->name('services.store');
     Route::get('services/{service}', [ServiceController::class, 'show'])

@@ -76,8 +76,10 @@ class UpdateServiceRequest extends FormRequest
             'description.en' => ['nullable', 'string'],
             'quantity' => ['sometimes', 'required', 'integer', 'min:1'],
             'work_type' => ['sometimes', 'required', 'string', 'max:255'],
-            'price' => ['sometimes', 'required', 'numeric', 'min:0'],
-            'currency' => ['sometimes', 'required', 'string', Rule::in(Service::ALLOWED_CURRENCIES)],
+            'price_syp' => ['required', 'numeric', 'min:0'],
+            'price_usd' => ['required', 'numeric', 'min:0'],
+            'latitude' => ['sometimes', 'required', 'numeric'],
+            'longitude' => ['sometimes', 'required', 'numeric'],
             'property_type' => [
                 'sometimes',
                 'required',

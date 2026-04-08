@@ -25,6 +25,8 @@ return [
     'service_updated' => 'Service updated successfully and is pending review.',
     'service_update_no_changes' => 'No fields or files were provided to update.',
     'service_deleted' => 'Service deleted successfully.',
+    'services_browse_fetched' => 'Services fetched successfully.',
+    'services_browse_price_range_invalid' => 'The maximum price must be greater than or equal to the minimum price.',
     'dynamic_values_must_be_empty' => 'No dynamic fields are defined for this category; dynamic_values must be empty.',
     'dynamic_values_keys_mismatch' => 'dynamic_values keys must match exactly the defined dynamic fields for this category.',
     'dynamic_field_unknown_type' => 'Invalid dynamic field type in category definition.',

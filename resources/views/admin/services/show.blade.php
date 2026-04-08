@@ -85,12 +85,24 @@
                 </div>
 
                 <div>
-                    <div class="text-xs text-slate-500 uppercase">{{ __('admin.price') }}</div>
-                    <div class="mt-1 text-slate-900 font-medium">{{ $service->price }} {{ $service->currency }}</div>
+                    <div class="text-xs text-slate-500 uppercase">{{ __('admin.price_syp') }}</div>
+                    <div class="mt-1 text-slate-900 font-medium">{{ $service->price_syp ?? '-' }}</div>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-500 uppercase">{{ __('admin.price_usd') }}</div>
+                    <div class="mt-1 text-slate-900 font-medium">{{ $service->price_usd ?? '-' }}</div>
                 </div>
                 <div>
                     <div class="text-xs text-slate-500 uppercase">{{ __('admin.property_type') }}</div>
                     <div class="mt-1 text-slate-900 font-medium">{{ $service->property_type }}</div>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-500 uppercase">{{ __('admin.latitude') }}</div>
+                    <div class="mt-1 text-slate-900 font-medium">{{ $service->latitude ?? '-' }}</div>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-500 uppercase">{{ __('admin.longitude') }}</div>
+                    <div class="mt-1 text-slate-900 font-medium">{{ $service->longitude ?? '-' }}</div>
                 </div>
             </div>
 
@@ -169,6 +181,58 @@
                         </a>
                     @endforeach
                 </div>
+            @endif
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 space-y-4">
+            <div class="flex items-center justify-between gap-3">
+                <h2 class="text-lg font-semibold text-slate-900">{{ __('admin.location_map') }}</h2>
+                @if(is_numeric($service->latitude) && is_numeric($service->longitude))
+                    <span class="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
+                        {{ number_format((float) $service->latitude, 5) }}, {{ number_format((float) $service->longitude, 5) }}
+                    </span>
+                @endif
+            </div>
+            @php
+                $hasCoordinates = is_numeric($service->latitude) && is_numeric($service->longitude);
+            @endphp
+            @if($hasCoordinates)
+                @php
+                    $latitude = (float) $service->latitude;
+                    $longitude = (float) $service->longitude;
+
+                    $delta = 0.01;
+                    $left = $longitude - $delta;
+                    $right = $longitude + $delta;
+                    $top = $latitude + $delta;
+                    $bottom = $latitude - $delta;
+                    $mapSrc = "https://www.openstreetmap.org/export/embed.html?bbox={$left}%2C{$bottom}%2C{$right}%2C{$top}&layer=mapnik&marker={$latitude}%2C{$longitude}";
+                    $openStreetMapUrl = "https://www.openstreetmap.org/?mlat={$latitude}&mlon={$longitude}#map=15/{$latitude}/{$longitude}";
+                @endphp
+
+                <div class="relative w-full h-96 rounded-2xl border border-slate-200 overflow-hidden bg-slate-100 shadow-inner">
+                    <iframe
+                        src="{{ $mapSrc }}"
+                        class="w-full h-full border-0"
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Service location map"
+                    ></iframe>
+                    <div class="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-slate-900/10 to-transparent"></div>
+                </div>
+
+                <div class="flex items-center justify-end">
+                    <a
+                        href="{{ $openStreetMapUrl }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                    >
+                        {{ __('admin.open_in_openstreetmap') }}
+                    </a>
+                </div>
+            @else
+                <p class="text-sm text-slate-500">{{ __('admin.service_coordinates_unavailable') }}</p>
             @endif
         </div>
     </div>

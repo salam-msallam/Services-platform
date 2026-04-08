@@ -25,6 +25,8 @@ return [
     'service_updated' => 'تم تحديث الخدمة بنجاح وهي الآن قيد المراجعة.',
     'service_update_no_changes' => 'لم يتم إرسال أي حقول أو ملفات للتحديث.',
     'service_deleted' => 'تم حذف الخدمة بنجاح.',
+    'services_browse_fetched' => 'تم جلب الخدمات بنجاح.',
+    'services_browse_price_range_invalid' => 'الحد الأقصى للسعر يجب أن يكون أكبر من أو يساوي الحد الأدنى.',
     'dynamic_values_must_be_empty' => 'لا توجد حقول ديناميكية لهذا التصنيف؛ يجب أن يكون dynamic_values فارغاً.',
     'dynamic_values_keys_mismatch' => 'مفاتيح dynamic_values يجب أن تطابق بالضبط الحقول الديناميكية المعرّفة لهذا التصنيف.',
     'dynamic_field_unknown_type' => 'نوع حقل ديناميكي غير صالح في تعريف التصنيف.',

@@ -31,6 +31,10 @@ class ServiceResource extends JsonResource
             'work_type' => $this->work_type,
             'price' => $this->price,
             'currency' => $this->currency,
+            'price_syp' => $this->price_syp,
+            'price_usd' => $this->price_usd,
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
             'property_type' => $this->property_type,
             'dynamic_values' => $this->dynamic_values,
             'status' => $statusValue,
@@ -53,6 +57,13 @@ class ServiceResource extends JsonResource
                     'name' => $this->subCategory->getTranslations('name'),
                 ]
                 : null,
+            'business_account' => $this->when(
+                $this->relationLoaded('businessAccount') && $this->businessAccount !== null,
+                fn (): array => [
+                    'id' => $this->businessAccount->id,
+                    'name' => $this->businessAccount->getTranslations('name'),
+                ]
+            ),
             'images' => $this->getMedia('images')->map(fn ($media): string => $media->getUrl())->values()->all(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
