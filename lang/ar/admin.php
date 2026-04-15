@@ -206,4 +206,10 @@ return [
     'cannot_delete_main_admin' => 'لا يمكن حذف المشرف الرئيسي.',
     'must_keep_one_super_admin' => 'يجب الإبقاء على مشرف أعلى واحد على الأقل.',
     'cannot_edit_main_admin_roles' => 'لا يمكن تعديل أدوار المشرف الرئيسي.',
+    'device_token_updated' => 'تم حفظ رمز الجهاز بنجاح.',
+    'notification_admin_profile_missing' => 'لا يوجد ملف مشرف مرتبط بهذا الحساب.',
+    'notification_pending_business_accounts_title' => 'حسابات أعمال بانتظار المراجعة',
+    'notification_pending_business_accounts_body' => 'توجد حسابات أعمال قيد الموافقة.',
+    'notification_pending_services_title' => 'خدمات بانتظار المراجعة',
+    'notification_pending_services_body' => 'توجد خدمات قيد الموافقة.',
 ];

@@ -9,6 +9,7 @@ use App\Exceptions\BusinessAccount\BusinessAccountActivityTypeAlreadyExistsExcep
 use App\Exceptions\BusinessAccount\BusinessAccountForbiddenOrNotFoundException;
 use App\Models\BusinessAccount;
 use App\Models\User;
+use App\Services\Notification\NotificationService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\UploadedFile;
@@ -16,6 +17,10 @@ use Illuminate\Support\Facades\DB;
 
 class BusinessAccountService
 {
+    public function __construct(
+        private readonly NotificationService $notificationService,
+    ) {}
+
     /**
      * @return Collection<int, BusinessAccount>
      */
@@ -39,6 +44,7 @@ class BusinessAccountService
 
             $alreadyExists = $user->businessAccounts()
                 ->where('activity_type_id', $activityTypeId)
+                ->where('status',StatusEnum::Accepted)
                 ->exists();
 
             if ($alreadyExists) {
@@ -71,6 +77,8 @@ class BusinessAccountService
                 throw new BusinessAccountActivityTypeAlreadyExistsException(__('api.business_account_activity_type_already_exists'));
             }
         });
+
+        $this->notificationService->notifyPendingBusinessAccountReview();
 
         return $businessAccount->load(['city', 'activityType']);
     }
@@ -141,6 +149,8 @@ class BusinessAccountService
 
             return $businessAccount->fresh(['city', 'activityType']);
         });
+
+        $this->notificationService->notifyPendingBusinessAccountReview();
 
         return $updated;
     }

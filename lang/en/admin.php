@@ -200,4 +200,10 @@ return [
     'cannot_delete_main_admin' => 'Main admin cannot be deleted.',
     'must_keep_one_super_admin' => 'At least one Super Admin must remain.',
     'cannot_edit_main_admin_roles' => 'Roles for the main admin cannot be changed.',
+    'device_token_updated' => 'Device token saved successfully.',
+    'notification_admin_profile_missing' => 'No admin profile is linked to this account.',
+    'notification_pending_business_accounts_title' => 'Business accounts awaiting review',
+    'notification_pending_business_accounts_body' => 'There are business accounts pending approval.',
+    'notification_pending_services_title' => 'Services awaiting review',
+    'notification_pending_services_body' => 'There are services pending approval.',
 ];

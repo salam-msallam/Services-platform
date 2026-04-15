@@ -3,8 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', __('admin.admin_panel'))</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @php
+        $viteAssets = ['resources/css/app.css', 'resources/js/app.js'];
+        if (filled(config('services.firebase_web.apiKey'))) {
+            $viteAssets[] = 'resources/js/admin-fcm.js';
+        }
+    @endphp
+    @vite($viteAssets)
+    @if(filled(config('services.firebase_web.apiKey')))
+        @php
+            $firebaseWebClient = array_filter(
+                config('services.firebase_web', []),
+                static fn (mixed $v): bool => $v !== null && $v !== '',
+            );
+        @endphp
+        <meta name="firebase-messaging-sw-url" content="{{ route('firebase.messaging.sw') }}">
+        <meta name="admin-device-token-url" content="{{ route('admin.notifications.device-token') }}">
+        <script type="application/json" id="firebase-web-config">@json($firebaseWebClient)</script>
+    @endif
 </head>
 @php
     $locale = app()->getLocale();

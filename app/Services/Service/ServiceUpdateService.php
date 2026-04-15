@@ -6,18 +6,23 @@ namespace App\Services\Service;
 
 use App\Enums\StatusEnum;
 use App\Models\Service;
+use App\Services\Notification\NotificationService;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class ServiceUpdateService
 {
+    public function __construct(
+        private readonly NotificationService $notificationService,
+    ) {}
+
     /**
-     * @param array<int, UploadedFile> $additionalImages
+     * @param  array<int, UploadedFile>  $additionalImages
      */
     public function update(Service $service, array $data, ?UploadedFile $mainImage = null, array $additionalImages = []): Service
     {
-        return DB::transaction(function () use ($service, $data, $mainImage, $additionalImages): Service {
+        $updated = DB::transaction(function () use ($service, $data, $mainImage, $additionalImages): Service {
             $service->refresh();
 
             $dynamicValues = $data['dynamic_values'] ?? null;
@@ -88,5 +93,9 @@ class ServiceUpdateService
 
             return $service->fresh()->load(['businessAccount', 'category', 'subCategory', 'city']);
         });
+
+        $this->notificationService->notifyPendingServiceReview();
+
+        return $updated;
     }
 }

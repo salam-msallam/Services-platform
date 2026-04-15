@@ -7,13 +7,18 @@ use App\Http\Controllers\Web\Admin\AppUserController;
 use App\Http\Controllers\Web\Admin\BusinessAccountReviewController;
 use App\Http\Controllers\Web\Admin\CategoryController;
 use App\Http\Controllers\Web\Admin\CityController;
+use App\Http\Controllers\Web\Admin\NotificationController;
 use App\Http\Controllers\Web\Admin\RoleController;
 use App\Http\Controllers\Web\Admin\RolePermissionController;
 use App\Http\Controllers\Web\Admin\ServiceReviewController;
 use App\Http\Controllers\Web\Admin\SubCategoryController;
+use App\Http\Controllers\Web\FirebaseMessagingSwController;
 use App\Http\Controllers\Web\LoginController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
+
+Route::get('/firebase-messaging-sw.js', FirebaseMessagingSwController::class)
+    ->name('firebase.messaging.sw');
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -53,6 +58,9 @@ Route::prefix('admin')
             Route::middleware('permission:access admin dashboard')->group(function (): void {
                 Route::get('/', [AdminDashboardController::class, 'index'])
                     ->name('dashboard');
+
+                Route::post('notifications/device-token', [NotificationController::class, 'updateDeviceToken'])
+                    ->name('notifications.device-token');
 
                 Route::middleware('permission:manage admins')->group(function (): void {
                     Route::get('admins', [AdminController::class, 'index'])

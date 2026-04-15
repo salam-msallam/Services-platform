@@ -6,14 +6,19 @@ namespace App\Services\Service;
 
 use App\Enums\StatusEnum;
 use App\Models\Service;
+use App\Services\Notification\NotificationService;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 
 class ServiceStoreService
 {
+    public function __construct(
+        private readonly NotificationService $notificationService,
+    ) {}
+
     public function store(array $data, UploadedFile $mainImage, array $additionalImages = []): Service
     {
-        return DB::transaction(function () use ($data, $mainImage, $additionalImages): Service {
+        $service = DB::transaction(function () use ($data, $mainImage, $additionalImages): Service {
             $dynamicValues = $data['dynamic_values'] ?? null;
 
             if (is_array($dynamicValues) && $dynamicValues === []) {
@@ -49,5 +54,9 @@ class ServiceStoreService
 
             return $service->load(['businessAccount', 'category', 'subCategory', 'city']);
         });
+
+        $this->notificationService->notifyPendingServiceReview();
+
+        return $service;
     }
 }

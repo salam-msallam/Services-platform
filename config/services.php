@@ -42,4 +42,39 @@ return [
         'base_url' => env('ULTRAMSG_BASE_URL', 'https://api.ultramsg.com'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Firebase (FCM)
+    |--------------------------------------------------------------------------
+    |
+    | Used by kreait/laravel-firebase. Prefer FIREBASE_CREDENTIALS pointing to
+    | your service account JSON (see .env.example).
+    |
+    */
+    'firebase' => [
+        'credentials' => env('FIREBASE_CREDENTIALS'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Firebase Web (FCM in browser / admin dashboard)
+    |--------------------------------------------------------------------------
+    |
+    | Public config from Firebase Console → Project settings → Your apps (Web).
+    | VAPID key: Cloud Messaging → Web configuration → Web Push certificates.
+    | The compat CDN version should stay in sync with firebase_sw_compat_version.
+    |
+    */
+    'firebase_sw_compat_version' => env('FIREBASE_SW_COMPAT_VERSION', '11.6.0'),
+
+    'firebase_web' => [
+        'apiKey' => env('FIREBASE_WEB_API_KEY'),
+        'authDomain' => env('FIREBASE_WEB_AUTH_DOMAIN'),
+        'projectId' => env('FIREBASE_WEB_PROJECT_ID'),
+        'storageBucket' => env('FIREBASE_WEB_STORAGE_BUCKET'),
+        'messagingSenderId' => env('FIREBASE_WEB_MESSAGING_SENDER_ID'),
+        'appId' => env('FIREBASE_WEB_APP_ID'),
+        'vapidKey' => env('FIREBASE_WEB_VAPID_KEY'),
+    ],
+
 ];
