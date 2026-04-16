@@ -56,4 +56,9 @@ return [
     'evaluation_validation_rating_integer' => 'يجب أن يكون التقييم رقماً صالحاً.',
     'evaluation_validation_rating_between' => 'يجب أن يكون التقييم بين 1 و 5.',
     'evaluation_validation_comment_string' => 'يجب أن يكون التعليق نصاً.',
+    'favorite_validation_service_id_required' => 'حقل الخدمة مطلوب.',
+    'favorite_validation_service_id_integer' => 'يجب أن يكون معرّف الخدمة رقماً صالحاً..',
+    'favorite_validation_service_id_exists' => 'الخدمة المحددة غير صالحة.',
+    'favorite_deleted' => 'تم حذف الخدمة إلى المفضلة بنجاح.',
+    'favorite_created' => 'تم إضافة الخدمة إلى المفضلة بنجاح.',
 ];

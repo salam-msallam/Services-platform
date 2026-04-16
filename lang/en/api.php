@@ -56,4 +56,9 @@ return [
     'evaluation_validation_rating_integer' => 'The rating must be a valid number.',
     'evaluation_validation_rating_between' => 'The rating must be between 1 and 5.',
     'evaluation_validation_comment_string' => 'The comment must be text.',
+    'favorite_validation_service_id_required' => 'The service is required.',
+    'favorite_validation_service_id_integer' => 'The service must be a valid number.',
+    'favorite_validation_service_id_exists' => 'The selected service is invalid.',
+    'favorite_deleted' => 'favorite deleted successfully.',
+    'favorite_created' => 'favorite created successfully',
 ];

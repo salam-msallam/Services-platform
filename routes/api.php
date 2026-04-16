@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Evaluation\EvaluationsController;
 use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Controllers\Api\Service\ServiceController;
 use App\Http\Controllers\Api\Service\ServiceIndexController;
+use App\Http\Controllers\Favorite\FavoriteController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth/app')->group(function (): void {
@@ -59,4 +60,7 @@ Route::middleware('auth:api')->group(function (): void {
 
     Route::post('evaluations', [EvaluationsController::class, 'store'])
         ->name('evaluations.store');
+
+    Route::post('favorite',[FavoriteController::class,'toggle'])
+        ->name('favorite.store');
 });
