@@ -7,6 +7,7 @@ use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Notification as NotificationFacade;
 use Spatie\Translatable\Translatable;
 
 class AppServiceProvider extends ServiceProvider
@@ -41,6 +42,10 @@ class AppServiceProvider extends ServiceProvider
         // Visiting `/admin` while logged out: send to the admin login route (not `/` / welcome).
         Authenticate::redirectUsing(function (Request $request): string {
             return route('admin.login');
+        });
+
+        NotificationFacade::extend('fcm', function ($app) {
+            return $app->make(\App\Notifications\Channels\FcmChannel::class);
         });
     }
 }

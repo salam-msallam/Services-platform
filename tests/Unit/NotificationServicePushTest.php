@@ -26,6 +26,8 @@ class NotificationServicePushTest extends TestCase
 
     public function test_notify_pending_business_accounts_sends_to_business_auditor_tokens(): void
     {
+        $businessAccountId = 123;
+
         $mock = $this->createMock(FirebaseNotificationService::class);
         $mock->expects($this->once())
             ->method('sendToTokens')
@@ -33,7 +35,11 @@ class NotificationServicePushTest extends TestCase
                 $this->isType('string'),
                 $this->isType('string'),
                 $this->equalTo(['ba-token']),
-                $this->equalTo(['event' => 'pending_business_accounts']),
+                $this->equalTo([
+                    'target_id' => $businessAccountId,
+                    'type' => 'business_account',
+                    'url' => "/admin/business-accounts/{$businessAccountId}",
+                ]),
             );
         $this->app->instance(FirebaseNotificationService::class, $mock);
 
@@ -51,11 +57,13 @@ class NotificationServicePushTest extends TestCase
             'platform' => 'web',
         ]);
 
-        $this->app->make(NotificationService::class)->notifyPendingBusinessAccountReview();
+        $this->app->make(NotificationService::class)->notifyPendingBusinessAccountReview($businessAccountId);
     }
 
     public function test_notify_pending_services_sends_to_service_moderator_tokens(): void
     {
+        $serviceId = 456;
+
         $mock = $this->createMock(FirebaseNotificationService::class);
         $mock->expects($this->once())
             ->method('sendToTokens')
@@ -63,7 +71,11 @@ class NotificationServicePushTest extends TestCase
                 $this->isType('string'),
                 $this->isType('string'),
                 $this->equalTo(['svc-token']),
-                $this->equalTo(['event' => 'pending_services']),
+                $this->equalTo([
+                    'target_id' => $serviceId,
+                    'type' => 'service',
+                    'url' => "/admin/services/{$serviceId}",
+                ]),
             );
         $this->app->instance(FirebaseNotificationService::class, $mock);
 
@@ -81,6 +93,6 @@ class NotificationServicePushTest extends TestCase
             'platform' => 'web',
         ]);
 
-        $this->app->make(NotificationService::class)->notifyPendingServiceReview();
+        $this->app->make(NotificationService::class)->notifyPendingServiceReview($serviceId);
     }
 }

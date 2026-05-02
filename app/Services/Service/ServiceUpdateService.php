@@ -94,7 +94,7 @@ class ServiceUpdateService
             return $service->fresh()->load(['businessAccount', 'category', 'subCategory', 'city']);
         });
 
-        $this->notificationService->notifyPendingServiceReview();
+        $this->notificationService->notifyPendingServiceReview($updated->id);
 
         return $updated;
     }

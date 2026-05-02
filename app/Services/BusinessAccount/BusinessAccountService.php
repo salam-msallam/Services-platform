@@ -78,7 +78,7 @@ class BusinessAccountService
             }
         });
 
-        $this->notificationService->notifyPendingBusinessAccountReview();
+        $this->notificationService->notifyPendingBusinessAccountReview($businessAccount->id);
 
         return $businessAccount->load(['city', 'activityType']);
     }
@@ -150,7 +150,7 @@ class BusinessAccountService
             return $businessAccount->fresh(['city', 'activityType']);
         });
 
-        $this->notificationService->notifyPendingBusinessAccountReview();
+        $this->notificationService->notifyPendingBusinessAccountReview($updated->id);
 
         return $updated;
     }
@@ -159,8 +159,8 @@ class BusinessAccountService
     {
         $this->ensureOwnedByUser($user, $businessAccount);
 
-        DB::transaction(static function () use ($businessAccount): void {
-            $businessAccount->delete();
+        DB::transaction(function () use ($businessAccount): void {
+            BusinessAccount::destroy($businessAccount->getKey());
         });
     }
 

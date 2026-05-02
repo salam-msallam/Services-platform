@@ -83,6 +83,28 @@ class User extends Authenticatable implements OAuthenticatable
         return $this->hasMany(Report::class);
     }
 
+    /**
+     * Resolve admin device tokens for the custom `fcm` notification channel.
+     *
+     * @return array<int,string>
+     */
+    public function routeNotificationForFcm(mixed $notification = null): array
+    {
+        // Admin device tokens are stored on the related `Admin` profile.
+        $relation = $this->admin?->deviceTokens();
+
+        if ($relation === null) {
+            return [];
+        }
+
+        return $relation
+            ->pluck('device_token')
+            ->unique()
+            ->filter()
+            ->values()
+            ->all();
+    }
+
     public function favoriteServices(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Service::class, 'favorites')

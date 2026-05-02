@@ -55,7 +55,7 @@ class ServiceStoreService
             return $service->load(['businessAccount', 'category', 'subCategory', 'city']);
         });
 
-        $this->notificationService->notifyPendingServiceReview();
+        $this->notificationService->notifyPendingServiceReview($service->id);
 
         return $service;
     }
