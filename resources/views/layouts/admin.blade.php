@@ -141,6 +141,22 @@
                     </li>
                 @endhasanyrole
 
+                @hasanyrole('super-admin|business-auditor')
+                    <li>
+                        <a
+                            href="{{ route('admin.reports.index') }}"
+                            class="group flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition
+                                {{ request()->routeIs('admin.reports.*') ? 'bg-indigo-600 text-white' : 'text-indigo-100 hover:bg-indigo-900/60 hover:text-white' }}"
+                        >
+                            <svg class="shrink-0" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                                <path d="M9 10h6M9 14h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            {{ __('api.report_management_menu') }}
+                        </a>
+                    </li>
+                @endhasanyrole
+
                 @hasanyrole('super-admin|service-moderator')
                     <li>
                         <a
@@ -240,6 +256,85 @@
 
                 <div class="flex items-center gap-3">
                     @auth
+                        @php
+                            /** @var \App\Models\User $authUser */
+                            $authUser = auth()->user();
+                            $unreadCount = $authUser->unreadNotifications()->count();
+                            $latestNotifications = $authUser->notifications()->latest()->limit(10)->get();
+                        @endphp
+
+                        <div id="notificationDropdown" class="relative">
+                            <button
+                                id="notificationToggle"
+                                type="button"
+                                class="relative inline-flex items-center justify-center h-10 w-10 rounded-xl border border-slate-300 bg-white hover:bg-slate-50"
+                                aria-label="Notifications"
+                                aria-expanded="false"
+                            >
+                                <svg class="h-5 w-5 text-slate-700" viewBox="0 0 24 24" fill="none">
+                                    <path d="M15 17h5l-1.4-1.4a2 2 0 0 1-.6-1.4V11a6 6 0 1 0-12 0v3.2c0 .5-.2 1-.6 1.4L4 17h5m6 0a3 3 0 1 1-6 0m6 0H9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+
+                                @if($unreadCount > 0)
+                                    <span class="absolute -top-1 -right-1 min-w-[1.25rem] h-5 px-1 rounded-full bg-rose-600 text-white text-[11px] flex items-center justify-center">
+                                        {{ $unreadCount > 99 ? '99+' : $unreadCount }}
+                                    </span>
+                                @endif
+                            </button>
+
+                            <div
+                                id="notificationPanel"
+                                class="absolute {{ app()->getLocale() === 'ar' ? 'left-0' : 'right-0' }} mt-2 w-96 max-w-[90vw] bg-white border border-slate-200 rounded-2xl shadow-lg z-50"
+                                style="display: none;"
+                            >
+                                <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
+                                    <p class="text-sm font-semibold text-slate-800">Notifications</p>
+
+                                    @if($unreadCount > 0)
+                                        <button
+                                            type="button"
+                                            class="text-xs font-medium text-indigo-600 hover:text-indigo-700"
+                                            onclick="markAllAsRead('{{ route('admin.notifications.mark-all-as-read') }}')"
+                                        >
+                                            Mark all as read
+                                        </button>
+                                    @endif
+                                </div>
+
+                                <div class="max-h-96 overflow-y-auto divide-y divide-slate-100">
+                                    @forelse($latestNotifications as $notification)
+                                        @php
+                                            $data = $notification->data ?? [];
+                                            $url = $data['url'] ?? '#';
+                                            $type = $data['type'] ?? 'general';
+                                            $isUnread = $notification->read_at === null;
+                                        @endphp
+
+                                        <a
+                                            href="{{ $url }}"
+                                            class="block px-4 py-3 hover:bg-slate-50 {{ $isUnread ? 'bg-indigo-50/40' : '' }}"
+                                            onclick="event.preventDefault(); markAsReadThenGo('{{ route('admin.notifications.mark-as-read', ['notificationId' => $notification->id]) }}','{{ $url }}');"
+                                        >
+                                            <div class="flex items-start gap-3">
+                                                <span class="mt-1 inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold bg-slate-100 text-slate-700">
+                                                    {{ $type }}
+                                                </span>
+                                                <div class="min-w-0">
+                                                    <p class="text-sm font-semibold text-slate-900">{{ $data['title'] ?? 'Notification' }}</p>
+                                                    <p class="text-xs text-slate-600 mt-1">{{ $data['message'] ?? '' }}</p>
+                                                    <p class="text-[11px] text-slate-400 mt-1">{{ $notification->created_at?->diffForHumans() }}</p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    @empty
+                                        <div class="px-4 py-8 text-center text-sm text-slate-500">
+                                            No notifications yet.
+                                        </div>
+                                    @endforelse
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="text-right {{ $locale === 'ar' ? 'text-right' : 'text-left' }}">
                             <div class="text-sm font-semibold text-slate-900">
                                 {{ auth()->user()->name }}
@@ -270,6 +365,87 @@
         </main>
     </div>
 </div>
+<script>
+    (function initNotificationDropdown() {
+        const dropdown = document.getElementById('notificationDropdown');
+        const toggle = document.getElementById('notificationToggle');
+        const panel = document.getElementById('notificationPanel');
+
+        if (!dropdown || !toggle || !panel) {
+            return;
+        }
+
+        const isOpen = () => panel.style.display !== 'none';
+
+        const openPanel = () => {
+            panel.style.display = 'block';
+            toggle.setAttribute('aria-expanded', 'true');
+        };
+
+        const closePanel = () => {
+            panel.style.display = 'none';
+            toggle.setAttribute('aria-expanded', 'false');
+        };
+
+        toggle.addEventListener('click', (event) => {
+            event.stopPropagation();
+            if (isOpen()) {
+                closePanel();
+                return;
+            }
+
+            openPanel();
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!dropdown.contains(event.target)) {
+                closePanel();
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                closePanel();
+            }
+        });
+    })();
+
+    async function markAsReadThenGo(markUrl, targetUrl) {
+        try {
+            await fetch(markUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                },
+                credentials: 'same-origin'
+            });
+        } catch (_) {
+            // Do not block navigation if mark-as-read fails.
+        }
+
+        window.location.href = targetUrl;
+    }
+
+    async function markAllAsRead(markAllUrl) {
+        try {
+            await fetch(markAllUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                },
+                credentials: 'same-origin'
+            });
+        } catch (_) {
+            // Fallback to refresh even if request fails.
+        }
+
+        window.location.reload();
+    }
+</script>
 </body>
 </html>
 

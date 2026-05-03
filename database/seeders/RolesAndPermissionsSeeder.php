@@ -24,6 +24,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'access admin dashboard',
             'approve business accounts',
             'reject business accounts',
+            'manage reports',
+            'resolve reports',
         ];
 
         $serviceModeratorPermissions = [

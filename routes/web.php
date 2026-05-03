@@ -8,6 +8,7 @@ use App\Http\Controllers\Web\Admin\BusinessAccountReviewController;
 use App\Http\Controllers\Web\Admin\CategoryController;
 use App\Http\Controllers\Web\Admin\CityController;
 use App\Http\Controllers\Web\Admin\NotificationController;
+use App\Http\Controllers\Web\Admin\ReportController;
 use App\Http\Controllers\Web\Admin\RoleController;
 use App\Http\Controllers\Web\Admin\RolePermissionController;
 use App\Http\Controllers\Web\Admin\ServiceReviewController;
@@ -61,6 +62,12 @@ Route::prefix('admin')
 
                 Route::post('notifications/device-token', [NotificationController::class, 'updateDeviceToken'])
                     ->name('notifications.device-token');
+
+                Route::post('notifications/{notificationId}/mark-as-read', [NotificationController::class, 'markAsRead'])
+                    ->name('notifications.mark-as-read');
+
+                Route::post('notifications/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])
+                    ->name('notifications.mark-all-as-read');
 
                 Route::middleware('permission:manage admins')->group(function (): void {
                     Route::get('admins', [AdminController::class, 'index'])
@@ -212,6 +219,16 @@ Route::prefix('admin')
                     Route::post('services/{service}/reject', [ServiceReviewController::class, 'reject'])
                         ->middleware('permission:reject services')
                         ->name('services.reject');
+                });
+
+                Route::middleware('role:super-admin|business-auditor')->group(function (): void {
+                    Route::get('reports', [ReportController::class, 'index'])
+                        ->name('reports.index');
+                    Route::get('reports/{report}', [ReportController::class, 'show'])
+                        ->name('reports.show');
+
+                    Route::post('reports/{report}/resolve', [ReportController::class, 'resolve'])
+                        ->name('reports.resolve');
                 });
 
                 Route::middleware('permission:assign role permissions')->group(function (): void {

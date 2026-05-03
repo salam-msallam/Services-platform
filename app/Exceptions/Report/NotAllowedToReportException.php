@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Exceptions\Report;
+
+use App\Http\Responses\ApiResponse;
+use Exception;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+class NotAllowedToReportException extends Exception
+{
+    public function render(Request $request): ?Response
+    {
+        if (! $request->expectsJson()) {
+            return null;
+        }
+
+        return ApiResponse::error(
+            $this->getMessage(),
+            [],
+            422
+        );
+    }
+}
