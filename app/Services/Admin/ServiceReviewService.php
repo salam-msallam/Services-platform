@@ -6,6 +6,8 @@ namespace App\Services\Admin;
 
 use App\Enums\StatusEnum;
 use App\Models\Service;
+use App\Models\User;
+use App\Notifications\ServiceStatusNotification;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -67,7 +69,14 @@ class ServiceReviewService
                 'status' => StatusEnum::Accepted,
             ]);
 
-            return $service->fresh()->load(['businessAccount', 'category', 'subCategory', 'city']);
+            $updatedService = $service->fresh()->load(['businessAccount.user', 'category', 'subCategory', 'city']);
+            $owner = $updatedService->businessAccount?->user;
+
+            if ($owner instanceof User) {
+                $owner->notify(new ServiceStatusNotification($updatedService, StatusEnum::Accepted));
+            }
+
+            return $updatedService;
         });
     }
 
@@ -84,7 +93,14 @@ class ServiceReviewService
                 'status' => StatusEnum::Rejected,
             ]);
 
-            return $service->fresh()->load(['businessAccount', 'category', 'subCategory', 'city']);
+            $updatedService = $service->fresh()->load(['businessAccount.user', 'category', 'subCategory', 'city']);
+            $owner = $updatedService->businessAccount?->user;
+
+            if ($owner instanceof User) {
+                $owner->notify(new ServiceStatusNotification($updatedService, StatusEnum::Rejected));
+            }
+
+            return $updatedService;
         });
     }
 }

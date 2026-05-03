@@ -7,6 +7,8 @@ namespace App\Services\Order;
 use App\Enums\StatusEnum;
 use App\Models\Order;
 use App\Models\User;
+use App\Notifications\NewOrderNotification;
+use App\Notifications\OrderStatusUpdatedNotification;
 use DomainException;
 use Illuminate\Support\Facades\DB;
 
@@ -18,7 +20,7 @@ class OrderService
 
     public function store(array $data): Order
     {
-        return DB::transaction(function () use ($data): Order {
+        $order = DB::transaction(function () use ($data): Order {
             return Order::query()->create([
                 'business_account_id' => $data['business_account_id'],
                 'service_id' => $data['service_id'],
@@ -28,6 +30,15 @@ class OrderService
                 'status' => StatusEnum::Pending,
             ]);
         });
+
+        $order->loadMissing('service.businessAccount.user');
+        $businessOwner = $order->service?->businessAccount?->user;
+
+        if ($businessOwner instanceof User) {
+            $businessOwner->notify(new NewOrderNotification($order));
+        }
+
+        return $order;
     }
 
     public function indexReceived(User $user, array $validated): array
@@ -160,6 +171,13 @@ class OrderService
 
         $order->update(['status' => $status]);
 
-        return $order->refresh()->load('businessAccount');
+        $updatedOrder = $order->refresh()->load('businessAccount.user');
+        $orderOwner = $updatedOrder->businessAccount?->user;
+
+        if ($orderOwner instanceof User) {
+            $orderOwner->notify(new OrderStatusUpdatedNotification($updatedOrder, $status));
+        }
+
+        return $updatedOrder;
     }
 }

@@ -3,7 +3,9 @@
 use App\Http\Controllers\Api\Auth\AppUserAuthController;
 use App\Http\Controllers\Api\BusinessAccount\BusinessAccountController;
 use App\Http\Controllers\Api\Evaluation\EvaluationsController;
+use App\Http\Controllers\Api\Notification\NotificationController;
 use App\Http\Controllers\Api\Order\OrderController;
+use App\Http\Controllers\Api\Report\ReportController;
 use App\Http\Controllers\Api\Service\ServiceController;
 use App\Http\Controllers\Api\Service\ServiceIndexController;
 use App\Http\Controllers\Favorite\FavoriteController;
@@ -63,4 +65,14 @@ Route::middleware('auth:api')->group(function (): void {
 
     Route::post('favorite',[FavoriteController::class,'toggle'])
         ->name('favorite.store');
+
+    Route::post('report',[ReportController::class,'store'])
+       ->name('report.store');
+
+    Route::get('notifications', [NotificationController::class, 'index'])
+        ->name('notifications.index');
+    Route::post('notifications/{notificationId}/mark-as-read', [NotificationController::class, 'markAsRead'])
+        ->name('notifications.mark-as-read');
+    Route::post('notifications/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])
+        ->name('notifications.mark-all-as-read');
 });

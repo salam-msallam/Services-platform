@@ -6,6 +6,8 @@ namespace App\Services\Admin;
 
 use App\Enums\StatusEnum;
 use App\Models\BusinessAccount;
+use App\Models\User;
+use App\Notifications\BusinessAccountStatusNotification;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -65,7 +67,14 @@ class BusinessAccountReviewService
                 'status' => StatusEnum::Accepted,
             ]);
 
-            return $businessAccount->fresh()->load(['city', 'activityType']);
+            $updatedBusinessAccount = $businessAccount->fresh()->load(['city', 'activityType', 'user']);
+            $owner = $updatedBusinessAccount->user;
+
+            if ($owner instanceof User) {
+                $owner->notify(new BusinessAccountStatusNotification($updatedBusinessAccount, StatusEnum::Accepted));
+            }
+
+            return $updatedBusinessAccount;
         });
     }
 
@@ -82,7 +91,14 @@ class BusinessAccountReviewService
                 'status' => StatusEnum::Rejected,
             ]);
 
-            return $businessAccount->fresh()->load(['city', 'activityType']);
+            $updatedBusinessAccount = $businessAccount->fresh()->load(['city', 'activityType', 'user']);
+            $owner = $updatedBusinessAccount->user;
+
+            if ($owner instanceof User) {
+                $owner->notify(new BusinessAccountStatusNotification($updatedBusinessAccount, StatusEnum::Rejected));
+            }
+
+            return $updatedBusinessAccount;
         });
     }
 }
