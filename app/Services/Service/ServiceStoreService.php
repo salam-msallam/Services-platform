@@ -35,7 +35,6 @@ class ServiceStoreService
                 'quantity' => $data['quantity'],
                 'work_type' => $data['work_type'],
                 // Keep legacy columns populated until old schema is retired.
-                'price' => $data['price_usd'],
                 'currency' => Service::CURRENCY_USD,
                 'price_syp' => $data['price_syp'],
                 'price_usd' => $data['price_usd'],

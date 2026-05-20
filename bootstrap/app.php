@@ -27,6 +27,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // API JSON messages use Accept-Language (en|ar).
         $middleware->appendToGroup('api', SetApiLocale::class);
+
+        $middleware->redirectGuestsTo(fn (Request $request): string => route('admin.login'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (InvalidOtpException $e, Request $request) {

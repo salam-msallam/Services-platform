@@ -45,6 +45,14 @@ class CityService
     public function deleteCity(City $city): void
     {
         DB::transaction(static function () use ($city): void {
+            $city->services()->update([
+                'city_id' => null,
+            ]);
+
+            $city->businessAccounts()->update([
+                'city_id' => null,
+            ]);
+
             $city->delete();
         });
     }

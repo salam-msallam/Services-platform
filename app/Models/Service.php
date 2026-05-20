@@ -37,6 +37,33 @@ class Service extends Model implements HasMedia
         self::CURRENCY_SYP,
     ];
 
+    protected static function booted(): void
+    {
+        static::deleting(function (Service $service): void {
+            if ($service->isForceDeleting()) {
+                return;
+            }
+
+            $service->orders()
+                ->whereIn('status', [
+                    StatusEnum::Pending->value,
+                    StatusEnum::Rejected->value,
+                ])
+                ->whereNull('deleted_at')
+                ->delete();
+        });
+
+        static::restoring(function (Service $service): void {
+            $service->orders()
+                ->onlyTrashed()
+                ->whereIn('status', [
+                    StatusEnum::Pending->value,
+                    StatusEnum::Rejected->value,
+                ])
+                ->restore();
+        });
+    }
+
     public array $translatable = [
         'title',
         'description',
@@ -52,7 +79,6 @@ class Service extends Model implements HasMedia
         'description',
         'quantity',
         'work_type',
-        'price',
         'price_syp',
         'price_usd',
         'currency',
@@ -63,7 +89,7 @@ class Service extends Model implements HasMedia
         'status',
     ];
 
-   
+
     protected function casts(): array
     {
         return [

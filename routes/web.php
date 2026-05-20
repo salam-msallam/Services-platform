@@ -3,6 +3,7 @@
 use App\Http\Controllers\Web\Admin\ActivityTypeController;
 use App\Http\Controllers\Web\Admin\AdminController;
 use App\Http\Controllers\Web\Admin\AdminDashboardController;
+use App\Http\Controllers\Web\Admin\AdminProfileController;
 use App\Http\Controllers\Web\Admin\AppUserController;
 use App\Http\Controllers\Web\Admin\BusinessAccountReviewController;
 use App\Http\Controllers\Web\Admin\CategoryController;
@@ -12,9 +13,11 @@ use App\Http\Controllers\Web\Admin\ReportController;
 use App\Http\Controllers\Web\Admin\RoleController;
 use App\Http\Controllers\Web\Admin\RolePermissionController;
 use App\Http\Controllers\Web\Admin\ServiceReviewController;
+use App\Http\Controllers\Web\Admin\SliderController as AdminSliderController;
 use App\Http\Controllers\Web\Admin\SubCategoryController;
 use App\Http\Controllers\Web\FirebaseMessagingSwController;
 use App\Http\Controllers\Web\LoginController;
+use App\Http\Controllers\Web\SliderController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 
@@ -32,6 +35,9 @@ Route::get('locale/{lang}', function (string $lang) {
 
     return redirect()->back();
 })->name('locale');
+
+Route::get('current-slider', [SliderController::class, 'showCurrent'])
+    ->name('current-slider');
 
 Route::prefix('admin')
     ->name('admin.')
@@ -59,6 +65,12 @@ Route::prefix('admin')
             Route::middleware('permission:access admin dashboard')->group(function (): void {
                 Route::get('/', [AdminDashboardController::class, 'index'])
                     ->name('dashboard');
+
+                Route::get('profile', [AdminProfileController::class, 'edit'])
+                    ->name('profile.edit');
+
+                Route::put('profile', [AdminProfileController::class, 'update'])
+                    ->name('profile.update');
 
                 Route::post('notifications/device-token', [NotificationController::class, 'updateDeviceToken'])
                     ->name('notifications.device-token');
@@ -190,6 +202,22 @@ Route::prefix('admin')
                     Route::delete('sub-categories/{subCategory}', [SubCategoryController::class, 'destroy'])
                         ->name('sub-categories.destroy');
                 });
+
+                Route::get('sliders', [AdminSliderController::class, 'index'])
+                    ->middleware('permission:view-sliders')
+                    ->name('sliders.index');
+
+                Route::post('sliders', [AdminSliderController::class, 'store'])
+                    ->middleware('permission:create-sliders')
+                    ->name('sliders.store');
+
+                Route::put('sliders/{slider}', [AdminSliderController::class, 'update'])
+                    ->middleware('permission:edit-sliders')
+                    ->name('sliders.update');
+
+                Route::delete('sliders/{slider}', [AdminSliderController::class, 'destroy'])
+                    ->middleware('permission:delete-sliders')
+                    ->name('sliders.destroy');
 
                 Route::middleware('role:super-admin|business-auditor')->group(function (): void {
                     Route::get('business-accounts', [BusinessAccountReviewController::class, 'index'])

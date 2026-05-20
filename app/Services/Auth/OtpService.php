@@ -18,24 +18,29 @@ final class OtpService
 
     public function generateAndSendOtpForAppUser(AppUser $appUser): void
     {
+        $this->generateAndSendOtpForPhone((int) $appUser->user_id, $appUser->phone);
+    }
+
+    public function generateAndSendOtpForPhone(?int $userId, string $phone): void
+    {
         $code = $this->generateCode();
 
-        DB::transaction(function () use ($appUser, $code): void {
+        DB::transaction(function () use ($userId, $phone, $code): void {
             OtpVerification::query()
-                ->where('identifier', $appUser->phone)
+                ->where('identifier', $phone)
                 ->whereNull('verified_at')
                 ->update(['verified_at' => now()]);
 
             OtpVerification::query()->create([
-                'user_id' => $appUser->user_id,
-                'identifier' => $appUser->phone,
+                'user_id' => $userId,
+                'identifier' => $phone,
                 'otp_code' => $code,
                 'expires_at' => now()->addMinutes(self::OTP_EXPIRY_MINUTES),
             ]);
         });
 
         $this->ultraMsgWhatsAppService->sendOtp(
-            $appUser->phone,
+            $phone,
             __('api.otp_whatsapp_message', ['code' => $code])
         );
     }
@@ -43,6 +48,27 @@ final class OtpService
     public function verifyOtp(string $phone, string $code): OtpVerification
     {
         $record = OtpVerification::query()
+            ->where('identifier', $phone)
+            ->whereNull('verified_at')
+            ->where('expires_at', '>', now())
+            ->orderByDesc('created_at')
+            ->first();
+
+        if (! $record || ! hash_equals((string) $record->otp_code, (string) $code)) {
+            throw new InvalidOtpException(__('api.invalid_otp'));
+        }
+
+        DB::transaction(function () use ($record): void {
+            $record->update(['verified_at' => now()]);
+        });
+
+        return $record;
+    }
+
+    public function verifyOtpForUser(int $userId, string $phone, string $code): OtpVerification
+    {
+        $record = OtpVerification::query()
+            ->where('user_id', $userId)
             ->where('identifier', $phone)
             ->whereNull('verified_at')
             ->where('expires_at', '>', now())

@@ -19,6 +19,27 @@ class BusinessAccount extends Model implements HasMedia
     use InteractsWithMedia;
     use SoftDeletes;
 
+    protected static function booted(): void
+    {
+        static::deleting(function (BusinessAccount $businessAccount): void {
+            if ($businessAccount->isForceDeleting()) {
+                return;
+            }
+
+            $businessAccount->services()
+                ->whereNull('deleted_at')
+                ->get()
+                ->each
+                ->delete();
+        });
+
+        static::restoring(function (BusinessAccount $businessAccount): void {
+            $businessAccount->services()
+                ->onlyTrashed()
+                ->restore();
+        });
+    }
+
     /**
      * @var array<int, string>
      */

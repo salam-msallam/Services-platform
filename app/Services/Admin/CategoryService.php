@@ -7,6 +7,7 @@ namespace App\Services\Admin;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class CategoryService
 {
@@ -38,6 +39,12 @@ class CategoryService
     public function deleteCategory(Category $category): void
     {
         DB::transaction(static function () use ($category): void {
+            if ($category->services()->exists()) {
+                throw ValidationException::withMessages([
+                    'category' => __('admin.category_has_services'),
+                ]);
+            }
+
             $category->delete();
         });
     }
@@ -65,10 +72,10 @@ class CategoryService
                     $out['options'] = is_array($opts)
                         ? array_values(array_filter(
                             array_map(
-                                static fn(mixed $o): string => is_string($o) ? trim($o) : '',
+                                static fn (mixed $o): string => is_string($o) ? trim($o) : '',
                                 $opts
                             ),
-                            static fn(string $s): bool => $s !== ''
+                            static fn (string $s): bool => $s !== ''
                         ))
                         : [];
                 }

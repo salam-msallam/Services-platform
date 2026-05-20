@@ -144,4 +144,25 @@ class OrderController
             __('api.order_updated'),
         );
     }
+
+    public function destroy(Request $request, Order $order): JsonResponse
+    {
+        $user = $request->user();
+
+        if (! $user instanceof User) {
+            return ApiResponse::error(__('auth.unauthenticated'), [], 401);
+        }
+
+        try {
+            $deleted = $this->orderService->delete($order, $user);
+        } catch (DomainException $exception) {
+            return ApiResponse::error(__('api.order_delete_not_allowed'), [], 403);
+        }
+
+        if (! $deleted) {
+            return ApiResponse::error(__('auth.unauthorized'), [], 403);
+        }
+
+        return ApiResponse::success([], __('api.order_deleted'));
+    }
 }

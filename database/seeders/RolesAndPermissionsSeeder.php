@@ -38,8 +38,14 @@ class RolesAndPermissionsSeeder extends Seeder
             'manage sub-categories',
             'manage dynamic fields',
             'manage cities',
-            'manage sliders',
             'manage activity types',
+        ];
+
+        $sliderManagerPermissions = [
+            'create-sliders',
+            'edit-sliders',
+            'delete-sliders',
+            'view-sliders',
         ];
 
         $adminPanelCorePermissions = [
@@ -53,6 +59,7 @@ class RolesAndPermissionsSeeder extends Seeder
             $businessAuditorPermissions,
             $serviceModeratorPermissions,
             $contentManagerPermissions,
+            $sliderManagerPermissions,
             $adminPanelCorePermissions,
         )));
 
@@ -104,6 +111,11 @@ class RolesAndPermissionsSeeder extends Seeder
             'guard_name' => 'web',
         ]);
 
+        $sliderManagerRole = Role::query()->firstOrCreate([
+            'name' => 'sliderManagerRole',
+            'guard_name' => 'web',
+        ]);
+
         $adminManagerRole = Role::query()->firstOrCreate([
             'name' => 'admin-manager',
             'guard_name' => 'web',
@@ -123,10 +135,10 @@ class RolesAndPermissionsSeeder extends Seeder
         $businessAuditorRole->syncPermissions($businessAuditorPermissions);
         $serviceModeratorRole->syncPermissions($serviceModeratorPermissions);
         $contentManagerRole->syncPermissions($contentManagerPermissions);
+        $sliderManagerRole->syncPermissions($sliderManagerPermissions);
         $adminManagerRole->syncPermissions(['manage admins']);
         $rolePermissionManagerRole->syncPermissions(['manage roles', 'assign role permissions']);
         $superAdminRole->syncPermissions($allWebPermissions);
         $regularUserRole->syncPermissions($regularUserPermissions);
     }
 }
-

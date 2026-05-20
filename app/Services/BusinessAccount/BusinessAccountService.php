@@ -164,6 +164,21 @@ class BusinessAccountService
         });
     }
 
+    public function restore(User $user, int $businessAccountId): BusinessAccount
+    {
+        $businessAccount = BusinessAccount::query()
+            ->withTrashed()
+            ->findOrFail($businessAccountId);
+
+        $this->ensureOwnedByUser($user, $businessAccount);
+
+        DB::transaction(function () use ($businessAccount): void {
+            $businessAccount->restore();
+        });
+
+        return $businessAccount->fresh(['city', 'activityType']) ?? $businessAccount;
+    }
+
     private function ensureOwnedByUser(User $user, BusinessAccount $businessAccount): void
     {
         if ($businessAccount->user_id !== $user->id) {

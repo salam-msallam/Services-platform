@@ -130,6 +130,78 @@ class AppUserAuthService
         }
     }
 
+    /**
+     * @return array{name: string|null, phone: string|null, phone_verified_at: string|null}
+     */
+    public function profile(User $user): array
+    {
+        $user->loadMissing('appUser');
+
+        return $this->profilePayload($user);
+    }
+
+    /**
+     * @param  array{name?: string, phone?: string}  $data
+     * @return array{profile: array{name: string|null, phone: string|null, phone_verified_at: string|null}, phone_verification_required: bool, pending_phone: string|null}
+     */
+    public function updateProfile(User $user, array $data): array
+    {
+        $user->loadMissing('appUser');
+
+        DB::transaction(function () use ($user, $data): void {
+            if (array_key_exists('name', $data)) {
+                $user->update([
+                    'name' => $data['name'],
+                ]);
+            }
+        });
+
+        $pendingPhone = null;
+        $currentPhone = $user->appUser?->phone;
+
+        if (array_key_exists('phone', $data) && $data['phone'] !== $currentPhone) {
+            $pendingPhone = $data['phone'];
+            $this->otpService->generateAndSendOtpForPhone((int) $user->id, $pendingPhone);
+        }
+
+        return [
+            'profile' => $this->profilePayload($user->refresh()->load('appUser')),
+            'phone_verification_required' => $pendingPhone !== null,
+            'pending_phone' => $pendingPhone,
+        ];
+    }
+
+    /**
+     * @return array{name: string|null, phone: string|null, phone_verified_at: string|null}
+     */
+    public function updatePassword(User $user, string $password): array
+    {
+        $user->update([
+            'password' => $password,
+        ]);
+
+        return $this->profilePayload($user->refresh()->load('appUser'));
+    }
+
+    /**
+     * @return array{name: string|null, phone: string|null, phone_verified_at: string|null}
+     */
+    public function verifyPhoneUpdate(User $user, string $phone, string $otp): array
+    {
+        $user->loadMissing('appUser');
+
+        $this->otpService->verifyOtpForUser((int) $user->id, $phone, $otp);
+
+        DB::transaction(function () use ($user, $phone): void {
+            $user->appUser?->update([
+                'phone' => $phone,
+                'phone_verified_at' => now(),
+            ]);
+        });
+
+        return $this->profilePayload($user->refresh()->load('appUser'));
+    }
+
     private function issueTokenPayload(User $user): array
     {
         $tokenResult = $user->createToken('app_user_token');
@@ -137,6 +209,18 @@ class AppUserAuthService
         return [
             'user' => $user,
             'token' => $tokenResult->accessToken,
+        ];
+    }
+
+    /**
+     * @return array{name: string|null, phone: string|null, phone_verified_at: string|null}
+     */
+    private function profilePayload(User $user): array
+    {
+        return [
+            'name' => $user->name,
+            'phone' => $user->appUser?->phone,
+            'phone_verified_at' => $user->appUser?->phone_verified_at?->toISOString(),
         ];
     }
 }

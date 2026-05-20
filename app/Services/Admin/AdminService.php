@@ -45,6 +45,7 @@ class AdminService
                 ->all();
 
             $user->syncRoles($roleNames);
+            $user->givePermissionTo('access admin dashboard');
 
             return $admin;
         });
@@ -96,6 +97,7 @@ class AdminService
                 ->all();
 
             $user->syncRoles($roleNames);
+            $user->givePermissionTo('access admin dashboard');
 
             return $admin->fresh(['user.roles']);
         });

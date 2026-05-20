@@ -28,7 +28,7 @@
     $locale = app()->getLocale();
 @endphp
 <body class="bg-slate-100 text-slate-900">
-<div class="flex h-screen {{ $locale === 'ar' ? 'flex-row-reverse' : '' }}">
+<div class="flex h-screen">
     <aside class="w-72 bg-indigo-950 text-indigo-100 flex flex-col border-r border-indigo-900/50 {{ $locale === 'ar' ? 'border-l border-r-0' : 'border-r' }}">
         <div class="h-16 px-4 flex items-center border-b border-indigo-900/50">
             <div class="flex items-center gap-3">
@@ -220,6 +220,22 @@
                     </li>
                 @endcan
 
+                @can('view-sliders')
+                    <li>
+                        <a
+                            href="{{ route('admin.sliders.index') }}"
+                            class="group flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition
+                                {{ request()->routeIs('admin.sliders.*') ? 'bg-indigo-600 text-white' : 'text-indigo-100 hover:bg-indigo-900/60 hover:text-white' }}"
+                        >
+                            <svg class="shrink-0" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 6h16v12H4V6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                                <path d="M8 10h4M8 14h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            {{ __('admin.manage_sliders') }}
+                        </a>
+                    </li>
+                @endcan
+
             </ul>
         </nav>
 
@@ -335,7 +351,10 @@
                             </div>
                         </div>
 
-                        <div class="text-right {{ $locale === 'ar' ? 'text-right' : 'text-left' }}">
+                        <a
+                            href="{{ route('admin.profile.edit') }}"
+                            class="block rounded-xl px-3 py-2 text-right transition hover:bg-slate-100 {{ $locale === 'ar' ? 'text-right' : 'text-left' }}"
+                        >
                             <div class="text-sm font-semibold text-slate-900">
                                 {{ auth()->user()->name }}
                             </div>
@@ -344,7 +363,13 @@
                                     {{ auth()->user()->admin->email }}
                                 </div>
                             @endif
-                        </div>
+                        </a>
+                        <a
+                            href="{{ route('admin.profile.edit') }}"
+                            class="inline-flex items-center px-3 py-2 rounded-xl border border-slate-300 text-sm font-medium text-slate-700 hover:bg-slate-50 transition"
+                        >
+                            {{ __('admin.profile') }}
+                        </a>
                         <form method="POST" action="{{ route('admin.logout') }}">
                             @csrf
                             <button
@@ -448,4 +473,3 @@
 </script>
 </body>
 </html>
-

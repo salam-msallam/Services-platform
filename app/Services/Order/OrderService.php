@@ -18,6 +18,8 @@ class OrderService
 
     private const ERROR_ORDER_UPDATE_NOT_ALLOWED = 'order_update_not_allowed';
 
+    private const ERROR_ORDER_DELETE_NOT_ALLOWED = 'order_delete_not_allowed';
+
     public function store(array $data): Order
     {
         $order = DB::transaction(function () use ($data): Order {
@@ -154,6 +156,22 @@ class OrderService
         }
 
         return $order->refresh()->load('businessAccount');
+    }
+
+    public function delete(Order $order, User $user): bool
+    {
+        $order->loadMissing('businessAccount');
+
+        $ownerId = $order->businessAccount?->user_id;
+        if ((int) $ownerId !== (int) $user->id) {
+            return false;
+        }
+
+        if ($order->status == StatusEnum::Accepted) {
+            throw new DomainException(self::ERROR_ORDER_DELETE_NOT_ALLOWED);
+        }
+
+        return (bool) $order->forceDelete();
     }
 
     private function updateStatus(Order $order, User $user, StatusEnum $status): ?Order

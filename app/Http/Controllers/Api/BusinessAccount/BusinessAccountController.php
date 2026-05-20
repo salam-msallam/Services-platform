@@ -89,4 +89,20 @@ class BusinessAccountController
 
         return ApiResponse::success([], __('api.business_account_deleted'));
     }
+
+    public function restore(Request $request, int $businessAccountId): JsonResponse
+    {
+        $user = $request->user();
+
+        if (! $user instanceof User) {
+            return ApiResponse::error(__('auth.unauthenticated'), [], 401);
+        }
+
+        $businessAccount = $this->businessAccountService->restore($user, $businessAccountId);
+
+        return ApiResponse::success(
+            BusinessAccountResource::make($businessAccount)->toArray($request),
+            __('api.business_account_restored'),
+        );
+    }
 }

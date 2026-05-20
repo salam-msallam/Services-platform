@@ -41,6 +41,10 @@ class SubCategoryService
     public function deleteSubCategory(SubCategory $subCategory): void
     {
         DB::transaction(static function () use ($subCategory): void {
+            $subCategory->services()->update([
+                'sub_category_id' => null,
+            ]);
+
             $subCategory->delete();
         });
     }

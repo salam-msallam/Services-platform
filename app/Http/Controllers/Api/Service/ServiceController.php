@@ -12,6 +12,7 @@ use App\Models\Service;
 use App\Models\User;
 use App\Services\Service\ServiceStoreService;
 use App\Services\Service\ServiceUpdateService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -152,5 +153,39 @@ class ServiceController
         $service->delete();
 
         return ApiResponse::success([], __('api.service_deleted'));
+    }
+
+    public function restore(Request $request, int $serviceId): JsonResponse
+    {
+        $user = $request->user();
+
+        if (! $user instanceof User) {
+            return ApiResponse::error(__('auth.unauthenticated'), [], 401);
+        }
+
+        try {
+            $service = Service::query()
+                ->withTrashed()
+                ->with(['businessAccount' => function ($query): void {
+                    $query->withTrashed();
+                }])
+                ->findOrFail($serviceId);
+        } catch (ModelNotFoundException) {
+            return ApiResponse::error(__('auth.unauthorized'), [], 403);
+        }
+
+        if (! $service->businessAccount || (int) $service->businessAccount->user_id !== (int) $user->id) {
+            return ApiResponse::error(__('auth.unauthorized'), [], 403);
+        }
+
+        $service->restore();
+        $service->load(['businessAccount', 'category', 'subCategory', 'city', 'media']);
+        $service->loadAvg('evaluations', 'rating');
+        $service->loadCount('evaluations');
+
+        return ApiResponse::success(
+            ServiceResource::make($service)->toArray($request),
+            __('api.service_restored'),
+        );
     }
 }

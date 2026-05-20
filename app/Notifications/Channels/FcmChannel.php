@@ -13,9 +13,6 @@ class FcmChannel
         private readonly FirebaseNotificationService $firebaseNotificationService,
     ) {}
 
-    /**
-     * @param  mixed  $notifiable  The notifiable entity (in this app: an admin `User`)
-     */
     public function send(mixed $notifiable, Notification $notification): void
     {
         if (! method_exists($notification, 'toDatabase')) {
